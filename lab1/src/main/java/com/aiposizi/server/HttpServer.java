@@ -12,6 +12,7 @@ import java.util.Date;
 public class HttpServer {
 
     private static final Logger logger = LogManager.getLogger(HttpServer.class);
+
     private ServerSocket serverSocket;
     private int port;
 
