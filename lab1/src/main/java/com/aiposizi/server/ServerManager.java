@@ -7,7 +7,7 @@ import org.apache.logging.log4j.Logger;
 import java.awt.print.Printable;
 import java.io.*;
 import java.net.Socket;
-import java.util.Date;
+
 
 public class ServerManager implements Runnable{
 
@@ -65,8 +65,7 @@ public class ServerManager implements Runnable{
         }finally {
             try {
                 in.close();
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 logger.log(Level.ERROR,"Error closing stream"+e.getMessage()); }
             try {
                 out.close();
@@ -79,20 +78,11 @@ public class ServerManager implements Runnable{
 
             logger.log(Level.INFO,"Connection closed");
 
+
         }
     }
 
-    private void processGet(String fileRequested) throws IOException {
-        logger.log(Level.INFO, "GET request accepted");
-        if (fileRequested.endsWith("/")) {
-            fileRequested += DEFAULT_FILE;
-        }
-        InputStream inputStream = findFile(fileRequested, true);
-        Content content = Content.findByFileName(fileRequested);
-        byte[] data = content.getReader().read(inputStream);
-        createResponse(Codes.OK, content, data.length, data);
-        logger.log(Level.INFO, "File " + fileRequested + " of type " + content.getText() + " returned");
-    }
+  
 
     private InputStream findFile(String fileName, boolean clientFile) throws FileNotFoundException {
         if (clientFile) {
@@ -127,6 +117,28 @@ public class ServerManager implements Runnable{
 
         }
         logger.log(Level.INFO, "Creating header of response with code " + code.getCode());
+    }
+
+    private void methodNotFound(String fileRequested) {
+    }
+
+    private void processOptions(String fileRequested) {
+    }
+
+
+    private void processPost(String fileRequested) {
+    }
+
+    private void processGet(String fileRequested) {
+       logger.log(Level.INFO, "GET request accepted");
+        if (fileRequested.endsWith("/")) {
+            fileRequested += DEFAULT_FILE;
+        }
+        InputStream inputStream = findFile(fileRequested, true);
+        Content content = Content.findByFileName(fileRequested);
+        byte[] data = content.getReader().read(inputStream);
+        createResponse(Codes.OK, content, data.length, data);
+        logger.log(Level.INFO, "File " + fileRequested + " of type " + content.getText() + " returned");
     }
 
 }
