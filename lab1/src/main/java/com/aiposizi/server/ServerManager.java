@@ -36,11 +36,49 @@ public class ServerManager implements Runnable{
     @Override
     public void run() {
 
+        String fileRequested;
         try {
+
             String input = in.readLine();
             logger.log(Level.INFO,"Input:\n"+input);
-        } catch (IOException e) {
+
+            String[] tokens = input.split("\\s");
+            String method = tokens[0].toUpperCase();
+            logger.log(Level.INFO, "Request type: " + method);
+            fileRequested = tokens[1];
+            switch (method){
+                case "GET":
+                    processGet(fileRequested);
+                    break;
+                case "POST":
+                    processPost(fileRequested);
+                    break;
+                case "OPTIONS":
+                    processOptions(fileRequested);
+                    break;
+                default:
+                    methodNotFound(fileRequested);
+            }
+
+        } catch (IOException|NullPointerException e) {
             logger.log(Level.ERROR, "Server error : " + e);
+        }finally {
+            try {
+                in.close();
+            }
+            catch (IOException e) {
+                logger.log(Level.ERROR,"Error closing stream"+e.getMessage()); }
+            try {
+                out.close();
+            } catch (IOException e) {
+                logger.log(Level.ERROR,"Error closing stream"+e.getMessage()); }
+            try {
+                connect.close();
+            } catch (IOException e) {
+                logger.log(Level.ERROR,"Error closing connect"+e.getMessage()); }
+
+            logger.log(Level.INFO,"Connection closed");
+
         }
     }
 
