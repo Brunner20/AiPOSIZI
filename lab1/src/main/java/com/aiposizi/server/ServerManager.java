@@ -4,23 +4,23 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.awt.print.Printable;
 import java.io.*;
 import java.net.Socket;
-
+import java.util.Date;
 
 public class ServerManager implements Runnable{
 
     private static final Logger logger = LogManager.getLogger(ServerManager.class);
     private Socket connect;
     private BufferedReader in;
-    private PrintWriter out; //поменял тип на PrintWriter, хз не испортит это че-нить, но дальше нужен PrintWriter
+    private PrintWriter out;
     private BufferedOutputStream dataOut;
 
-    private static final String ROOT = "/sharedFiles";
-    private static final String DEFAULT_FILE = "index.html";
+
     private static final String FILE_NOT_FOUND = "404.html";
     private static final String METHOD_NOT_SUPPORTED = "501.html";
+    private static final String ROOT = "./src/main/resources";
+    private static final String DEFAULT= "index.html";
 
     public ServerManager(Socket connect) {
         this.connect = connect;
@@ -35,7 +35,6 @@ public class ServerManager implements Runnable{
 
     @Override
     public void run() {
-
         String fileRequested;
         try {
 
@@ -67,10 +66,7 @@ public class ServerManager implements Runnable{
                 in.close();
             } catch (IOException e) {
                 logger.log(Level.ERROR,"Error closing stream"+e.getMessage()); }
-            try {
                 out.close();
-            } catch (IOException e) {
-                logger.log(Level.ERROR,"Error closing stream"+e.getMessage()); }
             try {
                 connect.close();
             } catch (IOException e) {
@@ -78,11 +74,10 @@ public class ServerManager implements Runnable{
 
             logger.log(Level.INFO,"Connection closed");
 
-
         }
     }
 
-  
+
 
     private InputStream findFile(String fileName, boolean clientFile) throws FileNotFoundException {
         if (clientFile) {
@@ -98,11 +93,11 @@ public class ServerManager implements Runnable{
         return inputStream;
     }
 
-    private void createResponse(Codes code, Content content, int fileLength, byte[] fileData) throws IOException {
+    private void createResponse(Codes code, FileType content, int fileLength, byte[] fileData) throws IOException {
         out.println("HTTP/1.1 " + code.getCode() + " " + code.getDescription());
         out.println("Server: Java HTTP Server");
         out.println("Date: " + new Date());
-        out.println("Content-type: " + content.getText());
+        out.println("Content-type: " + content.getType());
         out.println("Content-length: " + fileLength);
         out.println("Access-Control-Allow-Origin: " + "localhost");
         out.println("Access-Control-Allow-Methods: " + "GET, POST, OPTIONS");
@@ -114,7 +109,7 @@ public class ServerManager implements Runnable{
         try {
             Thread.sleep(fileLength / 100);
         } catch (InterruptedException e) {
-
+            e.printStackTrace();
         }
         logger.log(Level.INFO, "Creating header of response with code " + code.getCode());
     }
@@ -129,16 +124,40 @@ public class ServerManager implements Runnable{
     private void processPost(String fileRequested) {
     }
 
-    private void processGet(String fileRequested) {
-       logger.log(Level.INFO, "GET request accepted");
+    private void processGet(String fileRequested) throws IOException {
+        logger.log(Level.INFO, "GET request accepted");
         if (fileRequested.endsWith("/")) {
-            fileRequested += DEFAULT_FILE;
+            fileRequested += DEFAULT;
         }
-        InputStream inputStream = findFile(fileRequested, true);
-        Content content = Content.findByFileName(fileRequested);
-        byte[] data = content.getReader().read(inputStream);
-        createResponse(Codes.OK, content, data.length, data);
-        logger.log(Level.INFO, "File " + fileRequested + " of type " + content.getText() + " returned");
+        FileType filetype = FileType.getFileTypeByFilename(fileRequested);
+        byte[] file =readFileData(new File(fileRequested));
+        createResponse(Codes.OK,filetype,file.length,file);
+
     }
 
+    private byte[] readFileData(File file){
+
+        FileInputStream fileIn = null;
+        byte[] fileData = new byte[(int)file.length()];
+        try {
+            fileIn = new FileInputStream(file);
+            fileIn.read(fileData);
+
+        } catch (FileNotFoundException eg) {
+            logger.log(Level.WARN, "File:" + file.getName() + " not found, load " + FILE_NOT_FOUND);
+
+        } catch (IOException ioe) {
+            logger.log(Level.WARN, "File error" + ioe.getMessage());
+        } finally {
+            if (fileIn != null) {
+                try {
+                    fileIn.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return fileData;
+    }
 }

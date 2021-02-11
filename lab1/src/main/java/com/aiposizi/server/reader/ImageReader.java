@@ -1,9 +1,7 @@
-package com.aiposizi.server;
+package com.aiposizi.server.reader;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
-import java.awt.image.WritableRaster;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;

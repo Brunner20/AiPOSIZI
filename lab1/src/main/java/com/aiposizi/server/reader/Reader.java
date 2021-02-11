@@ -1,4 +1,4 @@
-package com.aiposizi.server;
+package com.aiposizi.server.reader;
 
 import java.io.IOException;
 import java.io.InputStream;
