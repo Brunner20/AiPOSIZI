@@ -1,8 +1,8 @@
 package com.aiposizi.server;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 
 import java.io.*;
 import java.net.Socket;
@@ -11,14 +11,14 @@ import java.util.Date;
 public class ServerManager implements Runnable{
 
     private static final Logger logger = LogManager.getLogger(ServerManager.class);
-    private Socket connect;
+    private final Socket connect;
     private BufferedReader in;
     private PrintWriter out;
     private BufferedOutputStream dataOut;
 
 
     private static final String FILE_NOT_FOUND = "404.html";
-    private static final String METHOD_NOT_SUPPORTED = "501.html";
+    private static final String METHOD_NOT_IMPLEMENTED= "501.html";
     private static final String ROOT = "./src/main/resources";
     private static final String DEFAULT= "index.html";
 
@@ -35,7 +35,7 @@ public class ServerManager implements Runnable{
 
     @Override
     public void run() {
-        String fileRequested;
+        String fileRequested = null;
         try {
 
             String input = in.readLine();
@@ -50,16 +50,24 @@ public class ServerManager implements Runnable{
                     processGet(fileRequested);
                     break;
                 case "POST":
-                    processPost(fileRequested);
+                    processPost();
                     break;
                 case "OPTIONS":
                     processOptions(fileRequested);
                     break;
                 default:
-                    methodNotFound(fileRequested);
+                    methodNotFound(method);
             }
 
-        } catch (IOException|NullPointerException e) {
+        } catch (FileNotFoundException fnfe) {
+            try {
+                logger.log(Level.WARN, "File:" + fileRequested + " not found, load " + FILE_NOT_FOUND);
+                fileNotFound(fileRequested);
+            } catch (IOException ioe) {
+                logger.log(Level.WARN, "File error" + ioe.getMessage());
+            }
+        }
+        catch (IOException|NullPointerException e) {
             logger.log(Level.ERROR, "Server error : " + e);
         }finally {
             try {
@@ -67,6 +75,11 @@ public class ServerManager implements Runnable{
             } catch (IOException e) {
                 logger.log(Level.ERROR,"Error closing stream"+e.getMessage()); }
                 out.close();
+            try {
+                dataOut.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             try {
                 connect.close();
             } catch (IOException e) {
@@ -79,19 +92,51 @@ public class ServerManager implements Runnable{
 
 
 
-    private InputStream findFile(String fileName, boolean clientFile) throws FileNotFoundException {
-        if (clientFile) {
-            fileName = ROOT + fileName;
-        } else {
-            fileName = "/" + fileName;
-        }
-        InputStream inputStream = this.getClass().getResourceAsStream(fileName);
-        logger.log(Level.INFO, "requested path of the file: " + this.getClass().getResource(fileName));
-        if (inputStream == null) {
-            throw new FileNotFoundException();
-        }
-        return inputStream;
+
+    private void methodNotFound(String method) throws IOException {
+        logger.log(Level.WARN, "Unknown method: " + method);
+        byte[] file =readFileData(new File(ROOT+METHOD_NOT_IMPLEMENTED));
+        createResponse(Codes.NOT_IMPLEMENTED, FileType.HTML, file.length, file);
     }
+
+    private void processOptions(String fileRequested) {
+        logger.log(Level.INFO, "OPTIONS request accepted");
+    }
+
+
+    private void processPost() throws IOException {
+        logger.log(Level.INFO, "POST request accepted");
+        createResponse(Codes.CREATED, FileType.PLAIN, 0, new byte[]{});
+    }
+
+    private void processGet(String fileRequested) throws IOException {
+        logger.log(Level.INFO, "GET request accepted");
+        if (fileRequested.endsWith("/")) {
+            fileRequested += DEFAULT;
+        }
+        FileType filetype = FileType.getFileTypeByFilename(fileRequested);
+        byte[] file = readFileData(new File(ROOT+fileRequested));
+        createResponse(Codes.OK,filetype,file.length,file);
+
+    }
+
+    private byte[] readFileData(File file) throws IOException{
+
+        FileInputStream fileIn;
+        byte[] fileData = new byte[(int)file.length()];
+
+            fileIn = new FileInputStream(file);
+            fileIn.read(fileData);
+
+            try {
+                fileIn.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        return fileData;
+    }
+    private void fileNotFound(String fileRequested) throws IOException{}
+
 
     private void createResponse(Codes code, FileType content, int fileLength, byte[] fileData) throws IOException {
         out.println("HTTP/1.1 " + code.getCode() + " " + code.getDescription());
@@ -106,58 +151,7 @@ public class ServerManager implements Runnable{
         dataOut.write(fileData, 0, fileLength);
         dataOut.flush();
         logger.log(Level.INFO, "type " + content.getExtension() + " size " + fileLength);
-        try {
-            Thread.sleep(fileLength / 100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
         logger.log(Level.INFO, "Creating header of response with code " + code.getCode());
-    }
-
-    private void methodNotFound(String fileRequested) {
-    }
-
-    private void processOptions(String fileRequested) {
-    }
-
-
-    private void processPost(String fileRequested) {
-    }
-
-    private void processGet(String fileRequested) throws IOException {
-        logger.log(Level.INFO, "GET request accepted");
-        if (fileRequested.endsWith("/")) {
-            fileRequested += DEFAULT;
-        }
-        FileType filetype = FileType.getFileTypeByFilename(fileRequested);
-        byte[] file =readFileData(new File(fileRequested));
-        createResponse(Codes.OK,filetype,file.length,file);
-
-    }
-
-    private byte[] readFileData(File file){
-
-        FileInputStream fileIn = null;
-        byte[] fileData = new byte[(int)file.length()];
-        try {
-            fileIn = new FileInputStream(file);
-            fileIn.read(fileData);
-
-        } catch (FileNotFoundException eg) {
-            logger.log(Level.WARN, "File:" + file.getName() + " not found, load " + FILE_NOT_FOUND);
-
-        } catch (IOException ioe) {
-            logger.log(Level.WARN, "File error" + ioe.getMessage());
-        } finally {
-            if (fileIn != null) {
-                try {
-                    fileIn.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        return fileData;
     }
 }
