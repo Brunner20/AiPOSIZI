@@ -15,9 +15,14 @@ public class HttpServer {
 
     private ServerSocket serverSocket;
     private int port;
+    private String rootFolder;
 
     public HttpServer(int port) {
         this.port = port;
+    }
+
+    public void setRootFolder(String rootFolder) {
+        this.rootFolder = rootFolder;
     }
 
     public void start(){
@@ -27,7 +32,7 @@ public class HttpServer {
             while (true){
             Socket acceptSocket =  serverSocket.accept();
             System.out.println("Connection opened. (" + new Date() + ")");
-            Thread thread = new Thread(new ServerManager(acceptSocket));
+            Thread thread = new Thread(new ServerManager(acceptSocket,rootFolder));
             thread.start();}
         } catch (IOException e) {
             System.err.println("Server connection error : " + e.getMessage());

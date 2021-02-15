@@ -15,6 +15,7 @@ public class Main {
     public static void main(String[] args) {
 
         int port = 8080;
+        String root= "./lab1/src/main/resources";
         List<String> arguments =Arrays.asList(args);
         if(!arguments.isEmpty()&&(arguments.get(0).startsWith("-")||arguments.get(0).startsWith("--"))){
             if(arguments.contains("-h")||arguments.contains("--help")){
@@ -31,8 +32,21 @@ public class Main {
                }
 
             }
+            if(arguments.contains("-r")||arguments.contains("--root")){
+                int argNum=-1;
+                if((argNum = arguments.indexOf("-r"))>-1)
+                    argNum++;
+                else if((argNum = arguments.indexOf("--root"))>-1)
+                    argNum++;
+                if(argNum!=-1)
+                    { root = arguments.get(argNum);
+                    logger.log(Level.INFO,"New root: "+root);}
+
+
+            }
         }
         HttpServer server = new HttpServer(port);
+        server.setRootFolder(root);
         server.start();
     }
 }

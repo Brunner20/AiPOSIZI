@@ -5,15 +5,19 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.String.format;
+
 public class HTMLGenerator {
 
     private StringBuffer htmlFile;
     private String path;
     private File folder;
-    private final String DIRECTORY_PATH = "./lab1/src/main/resources";
+    private final String DIRECTORY_PATH ;
 
-    public HTMLGenerator(String path) throws FileNotFoundException {
+    public HTMLGenerator(String DIRECTORY_PATH,String path) throws FileNotFoundException {
+        this.DIRECTORY_PATH = DIRECTORY_PATH;
         this.path = path;
+        htmlFile = new StringBuffer();
         File file = new File(DIRECTORY_PATH + path);
         if (!file.exists() && !file.isDirectory()) {
             throw new FileNotFoundException();
@@ -32,11 +36,14 @@ public class HTMLGenerator {
                else if(fileInList.isFile())
                    files.add(fileInList);
         }
-        createContent(files,folder);
+        createContent(files,directories);
     }
 
-    private void createContent(List<File> files, File folder) {
+    private void createContent(List<File> files, List<File> folder) {
         addBeginHTML();
+        htmlFile.append(createTag(1, path));
+        createTags(false, folder);
+        createTags(true, files);
         addEndHTML();
     }
 
@@ -45,6 +52,28 @@ public class HTMLGenerator {
     }
 
     private void addBeginHTML() {
-        htmlFile.append("<!DOCTYPE html>\\n<html lang=\\\"en\\\">\\n<head>\\n<meta charset=\\\"UTF-8\\\">\\n");
+        htmlFile.append("<!DOCTYPE html>\n<html lang=\\\"en\\\">\n<head>\n<meta charset=\\\"UTF-8\\\">\n");
+    }
+
+    private void createTags(boolean checkFiles, List<File> list) {
+        if (!list.isEmpty())
+        {
+            htmlFile.append(createTag(2, (checkFiles) ? "Read files:" : "Open directory"));
+            for (File file : list) {
+                 htmlFile.append(createTagWithLink(file));
+            }
+        }
+    }
+    private String createTag(int size, String message) {
+        return format("<h%d>%s</h%d>\n", size, message, size);
+    }
+
+    private String createTagWithLink(File file) {
+        String path = file.getPath().substring(DIRECTORY_PATH.length());
+        return format("<p><a href=\"http://localhost:8080%s\"> open %s</a></p>\n", path, file.getName());
+    }
+
+    public String getHtmlFile() {
+        return htmlFile.toString();
     }
 }

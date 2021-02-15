@@ -20,10 +20,12 @@ public class ServerManager implements Runnable{
 
     private static final String FILE_NOT_FOUND = "404.html";
     private static final String METHOD_NOT_IMPLEMENTED= "501.html";
-    private static final String ROOT = "./lab1/src/main/resources";
-    private static final String DEFAULT= "index.html";
+    private final String ROOT;
+    private static final String ROOT_TO_RESOURCES= "./lab1/src/main/resources";
 
-    public ServerManager(Socket connect) {
+
+    public ServerManager(Socket connect,String root) {
+        ROOT = root;
         this.connect = connect;
         try {
             in = new BufferedReader(new InputStreamReader(connect.getInputStream()));
@@ -60,7 +62,7 @@ public class ServerManager implements Runnable{
                     processPost(fileRequested);
                     break;
                 case "OPTIONS":
-                    processOptions(fileRequested);
+                    processOptions();
                     break;
                 default:
                     methodNotImplemented(method);
@@ -100,16 +102,22 @@ public class ServerManager implements Runnable{
 
     private void methodNotImplemented(String method) throws IOException {
         logger.log(Level.WARN, "Unknown method: " + method);
-        byte[] file =readFileData(new File(ROOT+"/"+METHOD_NOT_IMPLEMENTED));
-        createResponse(Codes.NOT_IMPLEMENTED, FileType.HTML, file.length, file);
+        byte[] file =readFileData(new File(ROOT_TO_RESOURCES+"/"+METHOD_NOT_IMPLEMENTED));
+        createResponse(Codes.NOT_IMPLEMENTED,
+                FileType.HTML,
+                file.length,
+                file);
     }
     private void fileNotFound(String fileRequested) throws IOException{
         logger.log(Level.WARN, "Not found file: " + fileRequested);
-        byte[] file =readFileData(new File(ROOT+"/"+FILE_NOT_FOUND));
-        createResponse(Codes.NOT_FOUND, FileType.HTML, file.length, file);
+        byte[] file =readFileData(new File(ROOT_TO_RESOURCES+"/"+FILE_NOT_FOUND));
+        createResponse(Codes.NOT_FOUND,
+                FileType.HTML,
+                file.length,
+                file);
     }
 
-    private void processOptions(String fileRequested) throws IOException {
+    private void processOptions() throws IOException {
         logger.log(Level.INFO, "OPTIONS request accepted");
         createResponse(Codes.OK,
                 FileType.PLAIN,
@@ -131,8 +139,9 @@ public class ServerManager implements Runnable{
 
     private void processGet(String fileRequested) throws IOException {
         logger.log(Level.INFO, "GET request accepted");
-        if (fileRequested.endsWith("/")) {
-            fileRequested += DEFAULT;
+        if (fileRequested.endsWith("/")||new File(ROOT+fileRequested).isDirectory()) {
+            byte[] data = new HTMLGenerator(ROOT,fileRequested).getHtmlFile().getBytes();
+            createResponse(Codes.OK,FileType.HTML,data.length,data);
         }
         byte[] file = readFileData(new File(ROOT+fileRequested));
         createResponse(Codes.OK,FileType.HTML,file.length,file);
