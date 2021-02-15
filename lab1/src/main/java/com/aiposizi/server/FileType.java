@@ -1,5 +1,6 @@
 package com.aiposizi.server;
 
+
 import java.util.Locale;
 
 public enum FileType {
@@ -14,9 +15,11 @@ public enum FileType {
     private String type;
     private String extension;
 
+
     FileType(String type, String extension) {
         this.type = type;
         this.extension = extension;
+
     }
 
     public String getType() {
@@ -26,6 +29,7 @@ public enum FileType {
     public String getExtension() {
         return extension;
     }
+
 
     public static FileType getFileTypeByFilename(String filename){
 

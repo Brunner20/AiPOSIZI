@@ -4,10 +4,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.Arrays;
 import java.util.List;
 
@@ -16,6 +13,7 @@ public class Main {
     private static final String HELP = "\n-h --help to print info\n-p --port to set port\n";
 
     public static void main(String[] args) {
+
         int port = 8080;
         List<String> arguments =Arrays.asList(args);
         if(!arguments.isEmpty()&&(arguments.get(0).startsWith("-")||arguments.get(0).startsWith("--"))){
