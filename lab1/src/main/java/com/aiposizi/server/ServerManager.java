@@ -27,6 +27,7 @@ public class ServerManager implements Runnable{
     public ServerManager(Socket connect,String root) {
         ROOT = root;
         this.connect = connect;
+
         try {
             in = new BufferedReader(new InputStreamReader(connect.getInputStream()));
             out = new PrintWriter(connect.getOutputStream());
@@ -140,7 +141,7 @@ public class ServerManager implements Runnable{
     private void processGet(String fileRequested) throws IOException {
         logger.log(Level.INFO, "GET request accepted");
         if (fileRequested.endsWith("/")||new File(ROOT+fileRequested).isDirectory()) {
-            byte[] data = new HTMLGenerator(ROOT,fileRequested).getHtmlFile().getBytes();
+            byte[] data = new HTMLGenerator(ROOT,fileRequested,connect.getLocalPort()).getHtmlFile().getBytes();
             createResponse(Codes.OK,FileType.HTML,data.length,data);
         }
         byte[] file = readFileData(new File(ROOT+fileRequested));
@@ -179,7 +180,7 @@ public class ServerManager implements Runnable{
         dataOut.write(fileData, 0, fileLength);
         dataOut.flush();
         try {
-            Thread.sleep(3000);
+            Thread.sleep(fileLength/10);
         } catch (InterruptedException ignored) {
             logger.log(Level.ERROR,"Thread error.");
         }

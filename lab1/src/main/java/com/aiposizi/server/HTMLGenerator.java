@@ -12,11 +12,13 @@ public class HTMLGenerator {
     private StringBuffer htmlFile;
     private String path;
     private File folder;
+    private int port;
     private final String DIRECTORY_PATH ;
 
-    public HTMLGenerator(String DIRECTORY_PATH,String path) throws FileNotFoundException {
+    public HTMLGenerator(String DIRECTORY_PATH,String path, int port) throws FileNotFoundException {
         this.DIRECTORY_PATH = DIRECTORY_PATH;
         this.path = path;
+        this.port = port;
         htmlFile = new StringBuffer();
         File file = new File(DIRECTORY_PATH + path);
         if (!file.exists() && !file.isDirectory()) {
@@ -70,7 +72,7 @@ public class HTMLGenerator {
 
     private String createTagWithLink(File file) {
         String path = file.getPath().substring(DIRECTORY_PATH.length());
-        return format("<p><a href=\"http://localhost:8080%s\"> open %s</a></p>\n", path, file.getName());
+        return format("<p><a href=\"http://localhost:%d%s\"> open %s</a></p>\n", port,path, file.getName());
     }
 
     public String getHtmlFile() {
