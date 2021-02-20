@@ -1,8 +1,10 @@
 package com.aiposizi.lab.entity;
 
 import com.sun.istack.NotNull;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -11,7 +13,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "authors")
-@Getter @Setter
+@Getter @Setter @EqualsAndHashCode
+@ToString
 public class Author implements Serializable {
 
     private static final long serialVersionUID = 63758923862459453L;

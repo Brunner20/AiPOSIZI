@@ -1,8 +1,10 @@
 package com.aiposizi.lab.entity;
 
 import com.sun.istack.NotNull;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 
 import javax.persistence.*;
@@ -11,7 +13,8 @@ import java.util.GregorianCalendar;
 
 @Entity
 @Table(name = "books")
-@Getter @Setter
+@Getter @Setter @EqualsAndHashCode
+@ToString
 public class Book implements Serializable {
 
     private static final long serialVersionUID = 63453822723859663L;
