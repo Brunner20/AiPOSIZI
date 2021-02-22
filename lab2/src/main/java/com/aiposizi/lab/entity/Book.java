@@ -9,7 +9,9 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 @Entity
 @Table(name = "books")
@@ -37,4 +39,6 @@ public class Book implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private Author author;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    private List<User> owners = new ArrayList<>();
 }
