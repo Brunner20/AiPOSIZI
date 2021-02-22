@@ -31,11 +31,9 @@ public class Book implements Serializable {
     @Column(name = "writing_year")
     private GregorianCalendar year;
 
-    @Column(name = "publisher")
     @ManyToOne(fetch = FetchType.LAZY)
     private Publisher publisher;
 
-    @Column(name = "author")
     @ManyToOne(fetch = FetchType.LAZY)
     private Author author;
 
