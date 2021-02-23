@@ -12,8 +12,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "publishers")
-@Getter @Setter @EqualsAndHashCode(of = "title")
-@ToString
+@Getter @Setter @EqualsAndHashCode
 public class Publisher {
 
     @Id
@@ -26,4 +25,9 @@ public class Publisher {
 
     @OneToMany(mappedBy = "publisher")
     private List<Book> publications = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return title;
+    }
 }

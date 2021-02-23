@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Book List</title>
+        <link rel="stylesheet" type="text/css" href="/css/style.css"/>
+    </head>
+    <body>
+        <h1>Book List</h1>
+
+        <div>
+            <nobr>
+                <a href="/books/add">Add Book</a> |
+                <a href="/">Back to Index</a>
+            </nobr>
+        </div>
+        <br/><br/>
+        <div>
+            <table border="1">
+                <tr>
+                    <th>Id</th>
+                    <th>title</th>
+                    <th>writing year</th>
+                    <th>publisher</th>
+                    <th>author</th>
+                </tr>
+                {{#books}}
+                    <tr>
+                        <td>{{id}}</td>
+                        <td><a href="/books/{{id}}">{{title}}</a></td>
+                        <td>{{year}}</td>
+                        <td>{{publisher}}</td>
+                        <td>{{author}}</td>
+                    </tr>
+                {{/books}}
+            </table>
+        </div>
+        <br/><br/>
+        <div>
+            <nobr>
+                {{#hasPrev}}<a href="/books?page={{prev}}">Prev</a>&nbsp;&nbsp;&nbsp;{{/hasPrev}}
+                {{#hasNext}}<a href="/books?page={{next}}">Next</a>{{/hasNext}}
+            </nobr>
+        </div>
+    </body>
+</html>

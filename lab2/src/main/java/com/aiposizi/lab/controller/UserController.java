@@ -51,13 +51,13 @@ public class UserController {
         return null;
     }
 
-    @GetMapping(value = {"/publishers/{publisherId}/delete"})
-    public String showDeletePublisher(Model model, @PathVariable long id) {
+    @GetMapping(value = {"/users/{usersId}/delete"})
+    public String showDeleteUser(Model model, @PathVariable long id) {
         return null;
     }
 
-    @PostMapping(value = {"/publishers/{publisherId}/delete"})
-    public String deletePublisher(Model model, @PathVariable long id, @ModelAttribute("publisher") Publisher publisher) {
+    @PostMapping(value = {"/users/{userId}/delete"})
+    public String deleteUser(Model model, @PathVariable long id, @ModelAttribute("user") Publisher publisher) {
         return null;
     }
 }

@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>User Details</title>
+        <link rel="stylesheet" type="text/css" href="/css/style.css"/>
+    </head>
+    <body>
+        <h1>View Book</h1>
+        <a href="/books">Back to Books List</a>
+        <br/><br/>
+        {{#book}}
+            <table border="0">
+                <tr>
+                    <td>ID</td>
+                    <td>:</td>
+                    <td>{{id}}</td>
+                </tr>
+                <tr>
+                    <td>Title</td>
+                    <td>:</td>
+                    <td>{{title}}</td>
+                </tr>
+                <tr>
+                     <td>Write</td>
+                     <td>:</td>
+                     <td>{{year}}</td>
+                </tr>
+                <tr>
+                    <td>Publisher</td>
+                    <td>:</td>
+                    <td>{{#publisher}}{{publisher}}{{/publisher}}</td>
+                </tr>
+                <tr>
+                    <td>Author</td>
+                    <td>:</td>
+                    <td>{{#author}}{{author}}{{/author}}</td>
+                </tr>
+            </table>
+            <br/><br/>
+
+                <div>
+                    <a href="/books/{{bookId}}/edit">Edit</a>
+                    <a href="/books/{{bookId}}/delete" method = "POST">Delete</a>
+                </div>
+
+        {{/book}}
+        {{#errorMessage}}
+            <div class="error">{{errorMessage}}</div>
+        {{/errorMessage}}
+    </body>
+</html>

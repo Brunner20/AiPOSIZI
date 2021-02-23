@@ -1,0 +1,3 @@
+2021-02-17 23:24:34,051 INFO c.a.s.Main [main] New port: 8082
+2021-02-17 23:24:34,196 INFO c.a.s.Main [main] New root: ./lab1/kek
+2021-02-17 23:24:34,251 INFO c.a.s.HttpServer [main] Server started. Waiting for incoming connections on port: 8082

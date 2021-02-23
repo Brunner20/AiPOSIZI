@@ -6,11 +6,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-
 import javax.persistence.*;
 import java.io.Serializable;
+import java.sql.Date;
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 @Entity
@@ -22,7 +21,7 @@ public class Book implements Serializable {
     private static final long serialVersionUID = 63453822723859663L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
@@ -31,12 +30,14 @@ public class Book implements Serializable {
     private String title;
 
     @Column(name = "writing_year")
-    private GregorianCalendar year;
+    private Date year;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "publisher")
     private Publisher publisher;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author")
     private Author author;
 
     @ManyToMany(fetch = FetchType.LAZY)

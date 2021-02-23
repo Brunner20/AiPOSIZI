@@ -7,10 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class UserService {
 
     @Autowired
@@ -35,8 +37,8 @@ public class UserService {
         if(existsById(user.getId())&&user.getId()!=null){
             throw new Exception("User with id: " + user.getId() + " already exists");
         }
-        if(user.getFirstName().isEmpty() || user.getSecondName().isEmpty()){
-            throw new Exception("FirstName and SecondName are required");
+        if(user.getFirstName().isEmpty() || user.getLastName().isEmpty()){
+            throw new Exception("FirstName and LastName are required");
         }
         return userRepository.save(user);
     }
@@ -45,8 +47,8 @@ public class UserService {
         if(!existsById(user.getId())){
             throw new Exception("Cannot find user with id " + user.getId());
         }
-        if(user.getFirstName().isEmpty() || user.getSecondName().isEmpry()){
-            throw new Exception("Firstname and Secondname are required");
+        if(user.getFirstName().isEmpty() || user.getLastName().isEmpty()){
+            throw new Exception("Firstname and LastName are required");
         }
         return userRepository.save(user);
     }

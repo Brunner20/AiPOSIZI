@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{{#add}}Create new Book{{/add}}{{^add}}Edit Book{{/add}}</title>
+        <link rel="stylesheet" type="text/css" href="/css/style.css"/>
+    </head>
+    <body>
+        <h1>{{#add}}Create new Book:{{/add}}{{^add}}Edit Book:{{/add}}</h1>
+        <a href="/books">Back to Book List</a>
+        <br/><br/>
+        {{#book}}
+        <form action="{{#add}}/books/add{{/add}}{{^add}}/books/{{id}}/edit{{/add}}" name="book" method="POST">
+            <table border="0">
+                {{#id}}
+                <tr>
+                    <td>ID</td>
+                    <td>:</td>
+                    <td>{{id}}</td>
+                </tr>
+                {{/id}}
+                <tr>
+                    <td>Tile</td>
+                    <td>:</td>
+                    <td><input type="text" name="title" value="{{#title}}{{title}}{{/title}}" /></td>
+                </tr>
+                <tr>
+                    <td>Writing</td>
+                    <td>:</td>
+                    <td><input type="text" name="year" value="{{#year}}{{year}}{{/year}}" /></td>
+                </tr>
+                <tr>
+                    <td>Author</td>
+                    <td>:</td>
+                    <td><input type="text" name="author" value="{{#author}}{{author}}{{/author}}" /></td>
+                </tr>
+                <tr>
+                    <td>Publisher</td>
+                    <td>:</td>
+                    <td><input type="text" name="publisher" value="{{#publisher}}{{publisher}}{{/publisher}}" /></td>
+                </tr>
+            </table>
+            <input type="submit" value="{{#add}}Create{{/add}}{{^add}}Update{{/add}}" />
+        </form>
+        {{/book}}
+
+        <br/>
+        <!-- Check if errorMessage is not null and not empty -->
+        <div class="error">{{#errorMessage}}{{errorMessage}}{{/errorMessage}}</div>
+    </body>
+</html>

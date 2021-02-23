@@ -14,7 +14,7 @@ import java.util.List;
 @Entity
 @Table(name = "authors")
 @Getter @Setter @EqualsAndHashCode
-@ToString
+
 public class Author implements Serializable {
 
     private static final long serialVersionUID = 63758923862459453L;
@@ -35,5 +35,8 @@ public class Author implements Serializable {
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private List<Book> books = new ArrayList<>();
 
-
+    @Override
+    public String toString() {
+        return  firstname + " " + lastname;
+    }
 }

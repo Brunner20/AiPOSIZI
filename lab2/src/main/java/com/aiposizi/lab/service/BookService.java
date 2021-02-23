@@ -57,4 +57,8 @@ public class BookService {
         }
         bookRepository.deleteById(id);
     }
+
+    public Long count(){
+        return bookRepository.count();
+    }
 }
