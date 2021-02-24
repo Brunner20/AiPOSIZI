@@ -1,6 +1,7 @@
 package com.aiposizi.server;
 
 
+import java.util.Arrays;
 import java.util.Locale;
 
 public enum FileType {
@@ -31,10 +32,13 @@ public enum FileType {
     }
 
 
-    public static FileType getFileTypeByFilename(String filename){
+    public static FileType getFileTypeByFilename(String fileName){
 
-        String extension = filename.substring(filename.lastIndexOf(".")+1);
-       return FileType.valueOf(extension.toUpperCase(Locale.ROOT));
-
+        String extension = fileName.substring(fileName.lastIndexOf(".")+1);
+        return Arrays.stream(FileType.values())
+                .filter(x -> x.getExtension().equalsIgnoreCase(extension))
+                .findFirst()
+                .orElse(PLAIN);
     }
+
 }

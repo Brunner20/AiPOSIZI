@@ -10,7 +10,7 @@ import java.util.List;
 
 public class Main {
     private static final Logger logger = LogManager.getLogger(Main.class);
-    private static final String HELP = "\n-h --help to print info\n-p --port to set port\n";
+    private static final String HELP = "\n-h --help to print info\n-p --port to set port\n-r --root to set root folder";
 
     public static void main(String[] args) {
 
@@ -22,18 +22,23 @@ public class Main {
                 logger.log(Level.INFO, HELP);
                 return;
             }
-            if(arguments.contains("-p")||arguments.contains("--port")){
-                String portArg = arguments.get(1);
-               try {
-                   port = Integer.parseInt(portArg);
-                   logger.log(Level.INFO,"New port: "+port);
-               }catch (NumberFormatException e){
-                   logger.log(Level.WARN,"invalid port. use default port 8080");
-               }
-
+            if(arguments.contains("-p")||arguments.contains("--port")) {
+                int argNum = -1;
+                if ((argNum = arguments.indexOf("-p")) > -1)
+                    argNum++;
+                else if ((argNum = arguments.indexOf("--port")) > -1)
+                    argNum++;
+                if (argNum != -1) {
+                    try {
+                        port = Integer.parseInt(arguments.get(argNum));
+                        logger.log(Level.INFO, "New port: " + port);
+                    } catch (NumberFormatException e) {
+                        logger.log(Level.WARN, "invalid port. use default port 8080");
+                    }
+                }
             }
             if(arguments.contains("-r")||arguments.contains("--root")){
-                int argNum=-1;
+                int  argNum=-1;
                 if((argNum = arguments.indexOf("-r"))>-1)
                     argNum++;
                 else if((argNum = arguments.indexOf("--root"))>-1)
@@ -45,6 +50,8 @@ public class Main {
 
             }
         }
+
+
         HttpServer server = new HttpServer(port);
         server.setRootFolder(root);
         server.start();

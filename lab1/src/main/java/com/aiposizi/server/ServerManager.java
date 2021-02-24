@@ -145,7 +145,7 @@ public class ServerManager implements Runnable{
             createResponse(Codes.OK,FileType.HTML,data.length,data);
         }
         byte[] file = readFileData(new File(ROOT+fileRequested));
-        createResponse(Codes.OK,FileType.HTML,file.length,file);
+        createResponse(Codes.OK,FileType.getFileTypeByFilename(fileRequested),file.length,file);
 
     }
 
