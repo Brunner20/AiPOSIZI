@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
+@RequestMapping(value = "/users")
 public class UserController {
 
     private final Logger logger = LogManager.getLogger(this.getClass());
@@ -21,43 +22,43 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping(value = "/users")
+    @GetMapping(value = "/")
     public String getUsers(Model model, @RequestParam(value = "page",defaultValue = "1") int pageNumber){
         return null;
     }
 
-    @GetMapping(value = "/users/{userId}")
-    public String getUserById(Model model, @PathVariable long id){
+    @GetMapping(value = "/{userId}")
+    public String getUserById(Model model, @PathVariable long userId){
         return null;
     }
 
-    @GetMapping(value = {"/users/add"})
+    @GetMapping(value = {"/add"})
     public String showAddUser(Model model) {
         return null;
     }
 
-    @PostMapping(value = {"/users/add"})
+    @PostMapping(value = {"/add"})
     public String addUser(Model model, @ModelAttribute("user") User user) {
         return null;
     }
 
-    @GetMapping(value = {"/users/{userId}/edit"})
-    public String showEditUser(Model model, @PathVariable long id) {
+    @GetMapping(value = {"/{userId}/edit"})
+    public String showEditUser(Model model, @PathVariable long userId) {
         return null;
     }
 
-    @PostMapping(value = {"/users/{userId}/edit"})
-    public String editUser(Model model, @PathVariable long id, @ModelAttribute("user") User user) {
+    @PostMapping(value = {"/{userId}/edit"})
+    public String editUser(Model model, @PathVariable long userId, @ModelAttribute("user") User user) {
         return null;
     }
 
-    @GetMapping(value = {"/users/{usersId}/delete"})
-    public String showDeleteUser(Model model, @PathVariable long id) {
+    @GetMapping(value = {"/{usersId}/delete"})
+    public String showDeleteUser(Model model, @PathVariable long usersId) {
         return null;
     }
 
-    @PostMapping(value = {"/users/{userId}/delete"})
-    public String deleteUser(Model model, @PathVariable long id, @ModelAttribute("user") Publisher publisher) {
+    @PostMapping(value = {"/{userId}/delete"})
+    public String deleteUser(Model model, @PathVariable long userId, @ModelAttribute("user") Publisher publisher) {
         return null;
     }
 }

@@ -7,7 +7,6 @@
     </head>
     <body>
         <h1>Book List</h1>
-
         <div>
             <nobr>
                 <a href="/books/add">Add Book</a> |
@@ -29,8 +28,8 @@
                         <td>{{id}}</td>
                         <td><a href="/books/{{id}}">{{title}}</a></td>
                         <td>{{year}}</td>
-                        <td>{{publisher}}</td>
-                        <td>{{author}}</td>
+                        <td>{{publisher.title}}</td>
+                        <td>{{author.firstname}} {{author.lastname}}</td>
                     </tr>
                 {{/books}}
             </table>

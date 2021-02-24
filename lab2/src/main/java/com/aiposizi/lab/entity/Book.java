@@ -8,8 +8,9 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.Date;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -21,8 +22,8 @@ public class Book implements Serializable {
     private static final long serialVersionUID = 63453822723859663L;
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name = "id")
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    @Column(name = "id",updatable = false,nullable = false)
     private Long id;
 
     @NotNull

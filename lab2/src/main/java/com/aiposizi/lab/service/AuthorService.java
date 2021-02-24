@@ -32,9 +32,6 @@ public class AuthorService {
         return authors;
     }
     public Author save(Author author) throws Exception {
-        if(existsById(author.getId())&&author.getId()!=null){
-            throw new Exception("Author with id: " + author.getId() + " already exists");
-        }
         if(author.getLastname().isEmpty()||author.getFirstname().isEmpty()){
             throw new Exception("Name is required");
         }
@@ -56,5 +53,9 @@ public class AuthorService {
             throw new Exception("Cannot find author with id " + id);
         }
         authorRepository.deleteById(id);
+    }
+
+    public List<Author> findByFirstnameAndLastname(String s, String s1) {
+       return authorRepository.findByFirstnameAndLastname(s,s1);
     }
 }

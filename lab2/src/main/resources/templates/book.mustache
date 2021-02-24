@@ -14,7 +14,7 @@
                 <tr>
                     <td>ID</td>
                     <td>:</td>
-                    <td>{{id}}</td>
+                    <td>{{#id}}{{id}}{{/id}}</td>
                 </tr>
                 <tr>
                     <td>Title</td>
@@ -29,21 +29,26 @@
                 <tr>
                     <td>Publisher</td>
                     <td>:</td>
-                    <td>{{#publisher}}{{publisher}}{{/publisher}}</td>
+                    <td>{{#publisher}}{{publisher.title}}{{/publisher}}</td>
                 </tr>
                 <tr>
                     <td>Author</td>
                     <td>:</td>
-                    <td>{{#author}}{{author}}{{/author}}</td>
+                    <td>{{#author}}{{author.firstname}} {{author.lastname}}{{/author}}</td>
                 </tr>
             </table>
             <br/><br/>
-
+            {{#allowDelete}}
+                <form action="/books/{{id}}/delete" method="POST">
+                    Delete this book? <input type="submit" value="Yes" />
+                </form>
+            {{/allowDelete}}
+            {{^allowDelete}}
                 <div>
                     <a href="/books/{{bookId}}/edit">Edit</a>
-                    <a href="/books/{{bookId}}/delete" method = "POST">Delete</a>
+                    <a href="/books/{{bookId}}/delete" method = "post">Delete</a>
                 </div>
-
+            {{/allowDelete}}
         {{/book}}
         {{#errorMessage}}
             <div class="error">{{errorMessage}}</div>

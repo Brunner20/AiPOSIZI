@@ -13,10 +13,12 @@ import java.util.List;
 @Entity
 @Table(name = "publishers")
 @Getter @Setter @EqualsAndHashCode
+@ToString
 public class Publisher {
 
     @Id
-    @Column(name = "p_id")
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    @Column(name = "p_id",updatable = false,nullable = false)
     private Long id;
 
     @NotNull
@@ -26,8 +28,5 @@ public class Publisher {
     @OneToMany(mappedBy = "publisher")
     private List<Book> publications = new ArrayList<>();
 
-    @Override
-    public String toString() {
-        return title;
-    }
+
 }

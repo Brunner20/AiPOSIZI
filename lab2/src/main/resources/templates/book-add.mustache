@@ -25,15 +25,15 @@
                 <tr>
                     <td>Author</td>
                     <td>:</td>
-                    <td><input type="text" name="author" value="{{#author}}{{author.firstname}} {{author.lastname}}{{/author}}" /></td>
+                    <td><input type="text" name="author" value="{{#author}}{{author}}{{/author}}" /></td>
                 </tr>
                 <tr>
                     <td>Publisher</td>
                     <td>:</td>
-                    <td><input type="text" name="publisher" value="{{#publisher}}{{publisher.title}}{{/publisher}}" /></td>
+                    <td><input type="text" name="publisher" value="{{#publisher}}{{publisher}}{{/publisher}}" /></td>
                 </tr>
             </table>
-            <input type="submit" value="{{#add}}Create{{/add}}{{^add}}Update{{/add}}" />
+            <input type="submit" value="Create" />
         </form>
         {{/book}}
 
