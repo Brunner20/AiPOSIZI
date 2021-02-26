@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Publisher List</title>
+        <link rel="stylesheet" type="text/css" href="/css/style.css"/>
+    </head>
+    <body>
+        <h1>Publisher List</h1>
+        <div>
+            <nobr>
+                <a href="/publishers/add">Add Publisher</a> |
+                <a href="/">Back to Index</a>
+            </nobr>
+        </div>
+        <br/><br/>
+        <div>
+            <table border="0">
+                <tr>
+                    <th>Id</th>
+                    <th>Title</th>
+                </tr>
+                {{#publishers}}
+                    <tr>
+                        <td>{{id}}</td>
+                        <td>{{title}}</td>
+                        <td><a href="/publishers/{{id}}">details</a></td>
+                    </tr>
+                {{/publishers}}
+            </table>
+        </div>
+        <br/><br/>
+        <div>
+            <nobr>
+                {{#hasPrev}}<a href="/publishers?page={{prev}}">Prev</a>&nbsp;&nbsp;&nbsp;{{/hasPrev}}
+                {{#hasNext}}<a href="/publishers?page={{next}}">Next</a>{{/hasNext}}
+            </nobr>
+        </div>
+    </body>
+</html>

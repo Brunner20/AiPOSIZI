@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Publisher Details</title>
+        <link rel="stylesheet" type="text/css" href="/css/style.css"/>
+    </head>
+    <body>
+        <h1>View Publisher</h1>
+        <a href="/publishers">Back to Publishers List</a>
+        <br/><br/>
+        {{#publisher}}
+            <table border="0">
+                <tr>
+                    <td>ID</td>
+                    <td>:</td>
+                    <td>{{#id}}{{id}}{{/id}}</td>
+                </tr>
+                <tr>
+                    <td>Title</td>
+                    <td>:</td>
+                    <td>{{title}}</td>
+                </tr>
+                <tr>
+                    <td>Publications</td>
+                    <td>:</td>
+                        {{#publisher.publications}}
+                            <tr>
+                                <td>{{title}}</a></td>
+                            </tr>
+                        {{/publisher.publications}}
+                </tr>
+
+            </table>
+            <br/><br/>
+            {{#allowDelete}}
+                <form action="/publishers/{{id}}/delete" method="POST">
+                    Delete this publisher? <input type="submit" value="Yes" />
+                </form>
+            {{/allowDelete}}
+            {{^allowDelete}}
+                <div>
+                    <a href="/publishers/{{id}}/edit">Edit</a>
+                    <a href="/publishers/{{id}}/delete" method = "post">Delete</a>
+                </div>
+            {{/allowDelete}}
+        {{/publisher}}
+        {{#errorMessage}}
+            <div class="error">{{errorMessage}}</div>
+        {{/errorMessage}}
+    </body>
+</html>

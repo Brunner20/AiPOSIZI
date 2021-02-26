@@ -1,14 +1,19 @@
 package com.aiposizi.lab.controller;
 
 
+import com.aiposizi.lab.dto.BookDto;
+import com.aiposizi.lab.entity.Book;
 import com.aiposizi.lab.entity.Publisher;
 import com.aiposizi.lab.service.PublisherService;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping(value = "/publishers")
@@ -21,19 +26,42 @@ public class PublisherController {
     @Autowired
     private PublisherService publisherService;
 
-    @GetMapping(value = "/")
+    @GetMapping(value = "")
     public String getPublishers(Model model, @RequestParam(value = "page",defaultValue = "1") int pageNumber){
-        return null;
+        List<Publisher> publisherList = publisherService.findAll(pageNumber,ROW_PER_PAGE);
+
+        long count = publisherService.count();
+        boolean hasPrev = pageNumber > 1;
+        boolean hasNext = (pageNumber * ROW_PER_PAGE) < count;
+        model.addAttribute("publishers", publisherList);
+        model.addAttribute("hasPrev", hasPrev);
+        model.addAttribute("prev", pageNumber - 1);
+        model.addAttribute("hasNext", hasNext);
+        model.addAttribute("next", pageNumber + 1);
+        return "publisher/publisherList";
     }
 
     @GetMapping(value = "/{publisherId}")
     public String getPublisherById(Model model, @PathVariable long publisherId){
-        return null;
+        Publisher publisher = null;
+        try {
+            publisher = publisherService.findById(publisherId);
+            model.addAttribute("allowDelete",false);
+        } catch (Exception e){
+            logger.log(Level.ERROR,"cannot find publisher" + e.getMessage());
+            model.addAttribute("errorMessage", e.getMessage());
+        }
+
+        model.addAttribute("publisher",publisher);
+        return "publisher/publisher";
     }
 
     @GetMapping(value = {"/add"})
     public String showAddPublisher(Model model) {
-        return null;
+        Publisher publisher = new Publisher();
+        model.addAttribute("add",true);
+        model.addAttribute("publisher",publisher);
+        return "publisher/publisher-add";
     }
 
     @PostMapping(value = {"/add"})
@@ -43,7 +71,16 @@ public class PublisherController {
 
     @GetMapping(value = {"/{publisherId}/edit"})
     public String showEditPublisher(Model model, @PathVariable long publisherId) {
-        return null;
+        Publisher publisher = null;
+        try {
+            publisher = publisherService.findById(publisherId);
+        } catch (Exception e){
+            logger.log(Level.ERROR,"cannot find publisher: "+ e.getMessage());
+            model.addAttribute("errorMessage", e.getMessage());
+        }
+        model.addAttribute("add",false);
+        model.addAttribute("publisher",publisher);
+        return "publisher/publisher-edit";
     }
 
     @PostMapping(value = {"/{publisherId}/edit"})
@@ -53,7 +90,18 @@ public class PublisherController {
 
     @GetMapping(value = {"/{publisherId}/delete"})
     public String showDeletePublisher(Model model, @PathVariable long publisherId) {
-        return null;
+        Publisher publisher = null;
+        try {
+            publisher = publisherService.findById(publisherId);
+            model.addAttribute("allowDelete",true);
+        } catch (Exception e){
+            logger.log(Level.ERROR,"cannot find publisher" + e.getMessage());
+            model.addAttribute("errorMessage", e.getMessage());
+        }
+
+        model.addAttribute("publisher",publisher);
+        return "publisher/publisher" +
+                "";
     }
 
     @PostMapping(value = {"/{publisherId}/delete"})

@@ -57,4 +57,5 @@ public class PublisherService {
         }
         publisherRepository.deleteById(id);
     }
+    public Long count(){return publisherRepository.count();}
 }
