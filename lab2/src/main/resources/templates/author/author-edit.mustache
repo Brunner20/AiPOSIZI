@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Edit Author</title>
+        <link rel="stylesheet" type="text/css" href="/css/style.css"/>
+    </head>
+    <body>
+        <h1>{{#add}}Create new Book:{{/add}}{{^add}}Edit Book:{{/add}}</h1>
+        <a href="/books">Back to Book List</a>
+        <br/><br/>
+        {{#author}}
+                <form action="{{#add}}/authors/add{{/add}}{{^add}}/authors/{{id}}/edit{{/add}}" name="author" method="POST">
+                    <table border="0">
+                        <tr>
+                            <td>Firstname</td>
+                            <td>:</td>
+                            <td><input type="text" name="title" value="{{#firstname}}{{firstname}}{{/firstname}}" /></td>
+                        </tr>
+                        <tr>
+                            <td>Lastname</td>
+                            <td>:</td>
+                            <td><input type="text" name="year" value="{{#lastname}}{{lastname}}{{/lastname}}" /></td>
+                        </tr>
+                    </table>
+                    <input type="submit" value="Update" />
+                </form>
+                {{/author}}
+
+
+        <br/>
+        <!-- Check if errorMessage is not null and not empty -->
+        <div class="error">{{#errorMessage}}{{errorMessage}}{{/errorMessage}}</div>
+    </body>
+</html>

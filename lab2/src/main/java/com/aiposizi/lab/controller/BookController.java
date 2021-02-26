@@ -12,7 +12,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.LinkedList;
 import java.util.List;
 
 @Controller
@@ -48,7 +47,7 @@ public class BookController {
         model.addAttribute("prev", pageNumber - 1);
         model.addAttribute("hasNext", hasNext);
         model.addAttribute("next", pageNumber + 1);
-        return "bookList";
+        return "book/bookList";
     }
 
     @GetMapping(value = "/books/{bookId}")
@@ -64,7 +63,7 @@ public class BookController {
         }
 
         model.addAttribute("book",book);
-        return "book";
+        return "book/book";
     }
 
     @GetMapping(value = {"/books/add"})
@@ -72,7 +71,7 @@ public class BookController {
         BookDto book = new BookDto();
         model.addAttribute("add",true);
         model.addAttribute("book",book);
-        return "book-add";
+        return "book/book-add";
     }
 
     @PostMapping(value = {"/books/add"})
@@ -80,14 +79,14 @@ public class BookController {
         try {
 
             Book newBook = bookService.save(bookService.dtoToBook(bookDto));
-            return "redirect:/books/";
+            return "redirect:book/books/";
         } catch (Exception e) {
             String errorMessage = e.getMessage();
             logger.log(Level.ERROR,"cannot save book: "+ errorMessage);
             model.addAttribute("errorMessage", errorMessage);
 
             model.addAttribute("add", true);
-            return "book-add";
+            return "book/book-add";
         }
     }
 
@@ -103,7 +102,7 @@ public class BookController {
         }
         model.addAttribute("add",false);
         model.addAttribute("book",book);
-        return "book-edit";
+        return "book/book-edit";
     }
 
     @PostMapping(value = {"/books/{bookId}/edit"})
@@ -113,13 +112,13 @@ public class BookController {
         try {
             book.setId(bookId);
             bookService.update(book);
-            return "redirect:/books/" + String.valueOf(book.getId());
+            return "redirect:book/books/" + String.valueOf(book.getId());
         } catch (Exception e) {
             logger.log(Level.ERROR,"cannot update book: "+ e.getMessage());
             model.addAttribute("errorMessage", e.getMessage());
 
             model.addAttribute("add", false);
-            return "book-edit";
+            return "book/book-edit";
         }
 
     }
@@ -137,20 +136,20 @@ public class BookController {
         }
 
         model.addAttribute("book",book);
-        return "book";
+        return "book/book";
     }
 
     @PostMapping(value = {"/books/{bookId}/delete"})
     public String deleteBook(Model model, @PathVariable long bookId) {
         try {
             bookService.deleteById(bookId);
-            return "redirect:/books";
+            return "redirect:book/books";
         } catch (Exception ex) {
             String errorMessage = ex.getMessage();
             logger.log(Level.ERROR,"cannot delete book: "+ ex.getMessage());
             model.addAttribute("errorMessage", errorMessage);
 
-            return "book";
+            return "book/book";
         }
     }
 

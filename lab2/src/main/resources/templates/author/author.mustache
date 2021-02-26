@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Author Details</title>
+        <link rel="stylesheet" type="text/css" href="/css/style.css"/>
+    </head>
+    <body>
+        <h1>View Author</h1>
+        <a href="/authors">Back to Authors List</a>
+        <br/><br/>
+        {{#author}}
+            <table border="0">
+                <tr>
+                    <td>ID</td>
+                    <td>:</td>
+                    <td>{{#id}}{{id}}{{/id}}</td>
+                </tr>
+                <tr>
+                    <td>Firstname</td>
+                    <td>:</td>
+                    <td>{{firstname}}</td>
+                </tr>
+                <tr>
+                     <td>Lastname</td>
+                     <td>:</td>
+                     <td>{{lastname}}</td>
+                </tr>
+
+                <tr>
+                    <td>Books</td>
+                    <td>:</td>
+                        {{#author.books}}
+                            <tr>
+                                <td>{{title}}</a></td>
+                            </tr>
+                        {{/author.books}}
+                </tr>
+
+            </table>
+            <br/><br/>
+            {{#allowDelete}}
+                <form action="/authors/{{id}}/delete" method="POST">
+                    Delete this author? <input type="submit" value="Yes" />
+                </form>
+            {{/allowDelete}}
+            {{^allowDelete}}
+                <div>
+                    <a href="/authors/{{authorId}}/edit">Edit</a>
+                    <a href="/authors/{{authorId}}/delete" method = "post">Delete</a>
+                </div>
+            {{/allowDelete}}
+        {{/author}}
+        {{#errorMessage}}
+            <div class="error">{{errorMessage}}</div>
+        {{/errorMessage}}
+    </body>
+</html>

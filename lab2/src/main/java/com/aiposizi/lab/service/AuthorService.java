@@ -58,4 +58,8 @@ public class AuthorService {
     public List<Author> findByFirstnameAndLastname(String s, String s1) {
        return authorRepository.findByFirstnameAndLastname(s,s1);
     }
+
+    public Long count(){
+        return authorRepository.count();
+    }
 }

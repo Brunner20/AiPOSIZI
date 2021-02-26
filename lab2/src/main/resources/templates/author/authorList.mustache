@@ -1,0 +1,42 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Author List</title>
+        <link rel="stylesheet" type="text/css" href="/css/style.css"/>
+    </head>
+    <body>
+        <h1>Author List</h1>
+        <div>
+            <nobr>
+                <a href="/authors/add">Add Author</a> |
+                <a href="/">Back to Index</a>
+            </nobr>
+        </div>
+        <br/><br/>
+        <div>
+            <table border="0">
+                <tr>
+                    <th>Id</th>
+                    <th>Firstname</th>
+                    <th>Lastname year</th>
+                </tr>
+                {{#authors}}
+                    <tr>
+                        <td>{{id}}</td>
+                        <td>{{firstname}}</td>
+                        <td>{{lastname}}</td>
+                        <td><a href="/authors/{{id}}">details</a></td>
+                    </tr>
+                {{/authors}}
+            </table>
+        </div>
+        <br/><br/>
+        <div>
+            <nobr>
+                {{#hasPrev}}<a href="/authors?page={{prev}}">Prev</a>&nbsp;&nbsp;&nbsp;{{/hasPrev}}
+                {{#hasNext}}<a href="/authors?page={{next}}">Next</a>{{/hasNext}}
+            </nobr>
+        </div>
+    </body>
+</html>
