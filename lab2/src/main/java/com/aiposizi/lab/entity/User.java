@@ -24,14 +24,19 @@ public class User implements Serializable {
     @Column(name = "id")
     private Long id;
 
-    @NotNull
-    @Column(name = "firstName")
-    private String firstName;
 
-    @NotNull
-    @Column(name = "lastName")
-    private String lastName;
+    @Column(name = "firstname")
+    private String firstname;
 
-    @ManyToMany(mappedBy = "owners")
+
+    @Column(name = "lastname")
+    private String lastname;
+
+    @ManyToMany
+    @JoinTable(
+            name = "m2m_books_user",
+            joinColumns = { @JoinColumn(name = "user_id") },
+            inverseJoinColumns = { @JoinColumn(name = "book_id") }
+    )
     private List<Book> books = new ArrayList<>();
 }

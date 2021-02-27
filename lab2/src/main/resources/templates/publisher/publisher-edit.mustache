@@ -7,20 +7,18 @@
     </head>
     <body>
         <h1>{{#add}}Create new Publisher:{{/add}}{{^add}}Edit Publisher:{{/add}}</h1>
-        <a href="/books">Back to Publisher List</a>
+        <a href="/publishers">Back to Publisher List</a>
         <br/><br/>
         {{#publisher}}
                 <form action="{{#add}}/publishers/add{{/add}}{{^add}}/publishers/{{id}}/edit{{/add}}" name="publisher" method="POST">
                     <table border="0">
                          <td>Title</td>
                              <td>:</td>
-                         <td><input type="text" name="title" value="{{#title}}{{title}}{{/title}}" /></td>
+                         <td><input type="text" name="title" value="{{title}}" /></td>
                     </table>
                     <input type="submit" value="Update" />
                 </form>
                 {{/publisher}}
-
-
         <br/>
         <!-- Check if errorMessage is not null and not empty -->
         <div class="error">{{#errorMessage}}{{errorMessage}}{{/errorMessage}}</div>

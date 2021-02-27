@@ -37,7 +37,7 @@ public class UserService {
         if(existsById(user.getId())&&user.getId()!=null){
             throw new Exception("User with id: " + user.getId() + " already exists");
         }
-        if(user.getFirstName().isEmpty() || user.getLastName().isEmpty()){
+        if(user.getFirstname().isEmpty() || user.getLastname().isEmpty()){
             throw new Exception("FirstName and LastName are required");
         }
         return userRepository.save(user);
@@ -47,7 +47,7 @@ public class UserService {
         if(!existsById(user.getId())){
             throw new Exception("Cannot find user with id " + user.getId());
         }
-        if(user.getFirstName().isEmpty() || user.getLastName().isEmpty()){
+        if(user.getFirstname().isEmpty() || user.getLastname().isEmpty()){
             throw new Exception("Firstname and LastName are required");
         }
         return userRepository.save(user);
@@ -58,5 +58,9 @@ public class UserService {
             throw new Exception("Cannot find User with id " + id);
         }
         userRepository.deleteById(id);
+    }
+
+    public Long count(){
+        return userRepository.count();
     }
 }

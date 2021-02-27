@@ -108,11 +108,12 @@ public class BookController {
     @PostMapping(value = {"/books/{bookId}/edit"})
     public String editBook(Model model, @PathVariable long bookId, @ModelAttribute("book") Book book) {
 
-
         try {
-            book.setId(bookId);
-            bookService.update(book);
-            return "redirect:book/books/" + String.valueOf(book.getId());
+            Book oldBook = bookService.findById(bookId);
+            oldBook.setYear(book.getYear());
+            oldBook.setTitle(book.getTitle());
+            bookService.update(oldBook);
+            return "redirect:/books/" + String.valueOf(oldBook.getId());
         } catch (Exception e) {
             logger.log(Level.ERROR,"cannot update book: "+ e.getMessage());
             model.addAttribute("errorMessage", e.getMessage());
@@ -143,7 +144,7 @@ public class BookController {
     public String deleteBook(Model model, @PathVariable long bookId) {
         try {
             bookService.deleteById(bookId);
-            return "redirect:book/books";
+            return "redirect:books/";
         } catch (Exception ex) {
             String errorMessage = ex.getMessage();
             logger.log(Level.ERROR,"cannot delete book: "+ ex.getMessage());

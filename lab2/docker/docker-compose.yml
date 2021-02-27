@@ -1,0 +1,28 @@
+version: '3.2'
+
+services:
+  app:
+    build:
+      context: services/app
+      dockerfile: Dockerfile
+    container_name: springbootapp
+    ports:
+      - "8080:8080"
+    restart: on-failure
+    depends_on:
+      - mysql
+
+  mysql:
+    build:
+      context: services/mysql
+      dockerfile: Dockerfile
+    container_name: db_mysql
+    ports:
+      - "5432:5432"
+    environment:
+      - MYSQl_PASSWORD=1234
+      - MYSQL_USER=root
+      - MYSQL_DB=labs
+
+
+

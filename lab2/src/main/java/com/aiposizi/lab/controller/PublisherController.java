@@ -4,6 +4,7 @@ package com.aiposizi.lab.controller;
 import com.aiposizi.lab.dto.BookDto;
 import com.aiposizi.lab.entity.Book;
 import com.aiposizi.lab.entity.Publisher;
+import com.aiposizi.lab.entity.User;
 import com.aiposizi.lab.service.PublisherService;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -85,7 +86,18 @@ public class PublisherController {
 
     @PostMapping(value = {"/{publisherId}/edit"})
     public String editPublisher(Model model, @PathVariable long publisherId, @ModelAttribute("publisher") Publisher publisher) {
-        return null;
+        try {
+            Publisher oldPublisher = publisherService.findById(publisherId);
+            oldPublisher.setTitle(publisher.getTitle());
+            publisherService.update(oldPublisher);
+            return "redirect:/publishers/" + String.valueOf(oldPublisher.getId());
+        } catch (Exception e) {
+            logger.log(Level.ERROR,"cannot update publisher: "+ e.getMessage());
+            model.addAttribute("errorMessage", e.getMessage());
+
+            model.addAttribute("add", false);
+            return "publisher/publisher-edit";
+        }
     }
 
     @GetMapping(value = {"/{publisherId}/delete"})
@@ -106,6 +118,15 @@ public class PublisherController {
 
     @PostMapping(value = {"/{publisherId}/delete"})
     public String deletePublisher(Model model, @PathVariable long publisherId, @ModelAttribute("publisher") Publisher publisher) {
-        return null;
+        try {
+            publisherService.deleteById(publisherId);
+            return "redirect:publishers/";
+        } catch (Exception ex) {
+            String errorMessage = ex.getMessage();
+            logger.log(Level.ERROR,"cannot delete publisher: "+ ex.getMessage());
+            model.addAttribute("errorMessage", errorMessage);
+
+            return "publisher/publisher";
+        }
     }
 }

@@ -7,27 +7,25 @@
     </head>
     <body>
         <h1>{{#add}}Create new Author:{{/add}}{{^add}}Edit Author:{{/add}}</h1>
-        <a href="/books">Back to Book List</a>
+        <a href="/authors">Back to Author List</a>
         <br/><br/>
         {{#author}}
                 <form action="{{#add}}/authors/add{{/add}}{{^add}}/authors/{{id}}/edit{{/add}}" name="author" method="POST">
                     <table border="0">
-                        <tr>
+                          <tr>
                             <td>Firstname</td>
                             <td>:</td>
-                            <td><input type="text" name="title" value="{{#firstname}}{{firstname}}{{/firstname}}" /></td>
-                        </tr>
-                        <tr>
-                            <td>Lastname</td>
-                            <td>:</td>
-                            <td><input type="text" name="year" value="{{#lastname}}{{lastname}}{{/lastname}}" /></td>
-                        </tr>
+                            <td><input type="text" name="firstname" value="{{firstname}}" /></td>
+                          </tr>
+                           <tr>
+                             <td>Lastname</td>
+                             <td>:</td>
+                             <td><input type="text" name="lastname" value="{{lastname}}" /></td>
+                           </tr>
                     </table>
                     <input type="submit" value="Update" />
                 </form>
                 {{/author}}
-
-
         <br/>
         <!-- Check if errorMessage is not null and not empty -->
         <div class="error">{{#errorMessage}}{{errorMessage}}{{/errorMessage}}</div>

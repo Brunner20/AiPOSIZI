@@ -1,0 +1,34 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{{#add}}Create new User{{/add}}{{^add}}Edit User{{/add}}</title>
+        <link rel="stylesheet" type="text/css" href="/css/style.css"/>
+    </head>
+    <body>
+        <h1>{{#add}}Create new User:{{/add}}{{^add}}Edit User:{{/add}}</h1>
+        <a href="/users">Back to User List</a>
+        <br/><br/>
+        {{#user}}
+        <form action="{{#add}}/users/add{{/add}}{{^add}}/users/{{id}}/edit{{/add}}" name="author" method="POST">
+            <table border="0">
+                <tr>
+                    <td>Firstname</td>
+                    <td>:</td>
+                    <td><input type="text" name="title" value="{{#firstname}}{{firstname}}{{/firstname}}" /></td>
+                </tr>
+                <tr>
+                    <td>Lastname</td>
+                    <td>:</td>
+                    <td><input type="text" name="year" value="{{#lastname}}{{lastname}}{{/lastname}}" /></td>
+                </tr>
+            </table>
+            <input type="submit" value="Create" />
+        </form>
+        {{/user}}
+
+        <br/>
+        <!-- Check if errorMessage is not null and not empty -->
+        <div class="error">{{#errorMessage}}{{errorMessage}}{{/errorMessage}}</div>
+    </body>
+</html>
