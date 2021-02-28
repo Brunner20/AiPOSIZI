@@ -1,5 +1,6 @@
 package com.aiposizi.lab.service;
 
+import com.aiposizi.lab.dto.UserDto;
 import com.aiposizi.lab.entity.Publisher;
 import com.aiposizi.lab.entity.User;
 import com.aiposizi.lab.repository.UserRepository;
@@ -33,29 +34,30 @@ public class UserService {
         return users;
     }
 
-    public User save(User user) throws Exception {
-        if(existsById(user.getId())&&user.getId()!=null){
-            throw new Exception("User with id: " + user.getId() + " already exists");
-        }
+    public User save(UserDto user) throws Exception {
+
         if(user.getFirstname().isEmpty() || user.getLastname().isEmpty()){
-            throw new Exception("FirstName and LastName are required");
+            throw new ServiceException("Firstname and Lastname are required");
         }
-        return userRepository.save(user);
+        User newUser = new User();
+        newUser.setFirstname(user.getFirstname());
+        newUser.setLastname(user.getLastname());
+        return userRepository.save(newUser);
     }
 
     public User update(User user) throws Exception {
         if(!existsById(user.getId())){
-            throw new Exception("Cannot find user with id " + user.getId());
+            throw new ServiceException("Cannot find user with id " + user.getId());
         }
         if(user.getFirstname().isEmpty() || user.getLastname().isEmpty()){
-            throw new Exception("Firstname and LastName are required");
+            throw new ServiceException("Firstname and Lastname are required");
         }
         return userRepository.save(user);
     }
 
     public void deleteById(Long id) throws Exception {
         if(!existsById(id)){
-            throw new Exception("Cannot find User with id " + id);
+            throw new ServiceException("Cannot find User with id " + id);
         }
         userRepository.deleteById(id);
     }

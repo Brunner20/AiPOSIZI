@@ -19,13 +19,15 @@
                 <tr>
                     <th>Id</th>
                     <th>Firstname</th>
-                    <th>Lastname year</th>
+                    <th>Lastname</th>
+                    <th>Birth</th>
                 </tr>
                 {{#authors}}
                     <tr>
                         <td>{{id}}</td>
                         <td>{{firstname}}</td>
                         <td>{{lastname}}</td>
+                        <td>{{year}}</td>
                         <td><a href="/authors/{{id}}">details</a></td>
                     </tr>
                 {{/authors}}

@@ -2,6 +2,7 @@ package com.aiposizi.lab.controller;
 
 import com.aiposizi.lab.dto.BookDto;
 import com.aiposizi.lab.entity.Book;
+import com.aiposizi.lab.service.AuthorService;
 import com.aiposizi.lab.service.BookService;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -23,6 +24,9 @@ public class BookController {
 
     @Autowired
     private BookService bookService;
+
+    @Autowired
+    private AuthorService authorService;
 
     @Value("${project.title}")
     private String title;
@@ -65,6 +69,30 @@ public class BookController {
         model.addAttribute("book",book);
         return "book/book";
     }
+    @GetMapping(value = "/books/{bookId}/author")
+    public String getAuthorOfBook(Model model, @RequestParam(value = "page",defaultValue = "1") int pageNumber, @PathVariable long bookId){
+
+        Book book = null;
+        try {
+            book = bookService.findById(bookId);
+            long count = bookService.count();
+            boolean hasPrev = pageNumber > 1;
+            boolean hasNext = (pageNumber * ROW_PER_PAGE) < count;
+            model.addAttribute("authors", authorService.findAll(pageNumber,ROW_PER_PAGE));
+            model.addAttribute("hasPrev", hasPrev);
+            model.addAttribute("prev", pageNumber - 1);
+            model.addAttribute("hasNext", hasNext);
+            model.addAttribute("next", pageNumber + 1);
+            return "book/authorsOfBook";
+        } catch (Exception e){
+            logger.log(Level.ERROR,"cannot find book" + e.getMessage());
+            model.addAttribute("errorMessage", e.getMessage());
+        }
+
+        model.addAttribute("book",book);
+        return "book/book";
+    }
+
 
     @GetMapping(value = {"/books/add"})
     public String showAddBook(Model model) {
@@ -78,13 +106,13 @@ public class BookController {
     public String addBook(Model model, @ModelAttribute("book") BookDto bookDto) {
         try {
 
-            Book newBook = bookService.save(bookService.dtoToBook(bookDto));
-            return "redirect:book/books/";
+            Book newBook = bookService.create(bookDto);
+            logger.log(Level.INFO,"book was created");
+            return "redirect:/books/" + String.valueOf(newBook.getId());
         } catch (Exception e) {
             String errorMessage = e.getMessage();
             logger.log(Level.ERROR,"cannot save book: "+ errorMessage);
             model.addAttribute("errorMessage", errorMessage);
-
             model.addAttribute("add", true);
             return "book/book-add";
         }
@@ -113,6 +141,7 @@ public class BookController {
             oldBook.setYear(book.getYear());
             oldBook.setTitle(book.getTitle());
             bookService.update(oldBook);
+            logger.log(Level.INFO,"book was updated");
             return "redirect:/books/" + String.valueOf(oldBook.getId());
         } catch (Exception e) {
             logger.log(Level.ERROR,"cannot update book: "+ e.getMessage());
@@ -144,7 +173,8 @@ public class BookController {
     public String deleteBook(Model model, @PathVariable long bookId) {
         try {
             bookService.deleteById(bookId);
-            return "redirect:books/";
+            logger.log(Level.INFO,"book was deleted");
+            return "redirect:/books/";
         } catch (Exception ex) {
             String errorMessage = ex.getMessage();
             logger.log(Level.ERROR,"cannot delete book: "+ ex.getMessage());

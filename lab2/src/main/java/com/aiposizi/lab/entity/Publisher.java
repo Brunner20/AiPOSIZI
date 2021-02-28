@@ -13,12 +13,12 @@ import java.util.List;
 @Entity
 @Table(name = "publishers")
 @Getter @Setter @EqualsAndHashCode
-@ToString
+@ToString(exclude = "publications")
 public class Publisher {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    @Column(name = "p_id",updatable = false,nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "p_id")
     private Long id;
 
     @NotNull

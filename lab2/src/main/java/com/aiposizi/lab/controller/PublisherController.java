@@ -2,10 +2,12 @@ package com.aiposizi.lab.controller;
 
 
 import com.aiposizi.lab.dto.BookDto;
+import com.aiposizi.lab.dto.PublisherDto;
 import com.aiposizi.lab.entity.Book;
 import com.aiposizi.lab.entity.Publisher;
 import com.aiposizi.lab.entity.User;
 import com.aiposizi.lab.service.PublisherService;
+import com.aiposizi.lab.service.ServiceException;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -66,8 +68,18 @@ public class PublisherController {
     }
 
     @PostMapping(value = {"/add"})
-    public String addPublisher(Model model, @ModelAttribute("publisher") Publisher publisher) {
-        return null;
+    public String addPublisher(Model model, @ModelAttribute("publisher") PublisherDto publisher) {
+        try {
+            Publisher newPublisher = publisherService.save(publisher);
+            logger.log(Level.INFO,"publisher was created");
+            return "redirect:/publishers/" + String.valueOf(newPublisher.getId());
+        } catch (Exception ex) {
+            String errorMessage = ex.getMessage();
+            logger.log(Level.ERROR,errorMessage);
+            model.addAttribute("errorMessage", errorMessage);
+            model.addAttribute("add", true);
+            return "publisher/publisher-edit";
+        }
     }
 
     @GetMapping(value = {"/{publisherId}/edit"})
@@ -112,15 +124,15 @@ public class PublisherController {
         }
 
         model.addAttribute("publisher",publisher);
-        return "publisher/publisher" +
-                "";
+        return "publisher/publisher";
     }
 
     @PostMapping(value = {"/{publisherId}/delete"})
-    public String deletePublisher(Model model, @PathVariable long publisherId, @ModelAttribute("publisher") Publisher publisher) {
+    public String deletePublisher(Model model, @PathVariable long publisherId) {
         try {
             publisherService.deleteById(publisherId);
-            return "redirect:publishers/";
+            logger.log(Level.INFO,"publisher was deleted");
+            return "redirect:/publishers/";
         } catch (Exception ex) {
             String errorMessage = ex.getMessage();
             logger.log(Level.ERROR,"cannot delete publisher: "+ ex.getMessage());

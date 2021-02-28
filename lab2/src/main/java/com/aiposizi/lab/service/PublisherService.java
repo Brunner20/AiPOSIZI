@@ -1,5 +1,6 @@
 package com.aiposizi.lab.service;
 
+import com.aiposizi.lab.dto.PublisherDto;
 import com.aiposizi.lab.entity.Publisher;
 import com.aiposizi.lab.repository.PublisherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,31 +32,36 @@ public class PublisherService {
         publisherRepository.findAll(sortedPage).forEach(publishers::add);
         return publishers;
     }
-    public Publisher save(Publisher publisher) throws Exception {
-        if(existsById(publisher.getId())&&publisher.getId()!=null){
-            throw new Exception("Publisher with id: " + publisher.getId() + " already exists");
-        }
+    public Publisher save(PublisherDto publisher) throws Exception {
+
         if(publisher.getTitle().isEmpty()){
-            throw new Exception("title is required");
+            throw new ServiceException("title is required");
         }
-        return publisherRepository.save(publisher);
+        Publisher newPublisher = new Publisher();
+        newPublisher.setTitle(publisher.getTitle());
+        return publisherRepository.save(newPublisher);
     }
 
     public Publisher update(Publisher publisher) throws Exception {
         if(!existsById(publisher.getId())){
-            throw new Exception("Cannot find publisher with id " + publisher.getId());
+            throw new ServiceException("Cannot find publisher with id " + publisher.getId());
         }
         if(publisher.getTitle().isEmpty()){
-            throw new Exception("title is required");
+            throw new ServiceException("title is required");
         }
         return publisherRepository.save(publisher);
     }
 
     public void deleteById(Long id) throws Exception {
         if(!existsById(id)){
-            throw new Exception("Cannot find publisher with id " + id);
+            throw new ServiceException("Cannot find publisher with id " + id);
         }
         publisherRepository.deleteById(id);
     }
     public Long count(){return publisherRepository.count();}
+
+
+    public List<Publisher> findByTitle(String title) {
+        return publisherRepository.findByTitle(title);
+    }
 }

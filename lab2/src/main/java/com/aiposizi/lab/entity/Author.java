@@ -8,13 +8,14 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "authors")
 @Getter @Setter @EqualsAndHashCode
-
+@ToString(exclude = "books")
 public class Author implements Serializable {
 
     private static final long serialVersionUID = 63758923862459453L;
@@ -32,8 +33,10 @@ public class Author implements Serializable {
     @Column(name = "lastname")
     private String lastname;
 
+    @Column(name = "birth_year")
+    private Date year;
+
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private List<Book> books = new ArrayList<>();
-
 
 }

@@ -10,7 +10,6 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 import java.sql.Date;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,8 +22,8 @@ public class Book implements Serializable {
     private static final long serialVersionUID = 63453822723859663L;
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    @Column(name = "id",updatable = false,nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @NotNull

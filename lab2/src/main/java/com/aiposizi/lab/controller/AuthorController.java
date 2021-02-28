@@ -1,7 +1,9 @@
 package com.aiposizi.lab.controller;
 
+import com.aiposizi.lab.dto.AuthorDto;
 import com.aiposizi.lab.entity.Author;
 import com.aiposizi.lab.entity.Book;
+import com.aiposizi.lab.entity.Publisher;
 import com.aiposizi.lab.entity.User;
 import com.aiposizi.lab.service.AuthorService;
 import org.apache.logging.log4j.Level;
@@ -66,8 +68,18 @@ public class AuthorController {
     }
 
     @PostMapping(value = {"/add"})
-    public String addAuthor(Model model, @ModelAttribute("author") Author author) {
-        return null;
+    public String addAuthor(Model model, @ModelAttribute("author") AuthorDto author) {
+        try {
+            Author newAuthor = authorService.save(author);
+            logger.log(Level.INFO,"author was created");
+            return "redirect:/authors/" + String.valueOf(newAuthor.getId());
+        } catch (Exception ex) {
+            String errorMessage = ex.getMessage();
+            logger.log(Level.ERROR,errorMessage);
+            model.addAttribute("errorMessage", errorMessage);
+            model.addAttribute("add", true);
+            return "author/author-edit";
+        }
     }
 
     @GetMapping(value = {"/{authorId}/edit"})
@@ -90,7 +102,9 @@ public class AuthorController {
             Author oldAuthor = authorService.findById(authorId);
             oldAuthor.setFirstname(author.getFirstname());
             oldAuthor.setLastname(author.getLastname());
+            oldAuthor.setYear(author.getYear());
             authorService.update(oldAuthor);
+            logger.log(Level.INFO,"author was updated");
             return "redirect:/authors/" + String.valueOf(oldAuthor.getId());
         } catch (Exception e) {
             logger.log(Level.ERROR,"cannot update author: "+ e.getMessage());
@@ -121,7 +135,8 @@ public class AuthorController {
     public String deleteAuthor(Model model, @PathVariable long authorId, @ModelAttribute("author") Author author) {
         try {
             authorService.deleteById(authorId);
-            return "redirect:authors/";
+            logger.log(Level.INFO,"author was deleted");
+            return "redirect:/authors/";
         } catch (Exception ex) {
             String errorMessage = ex.getMessage();
             logger.log(Level.ERROR,"cannot delete author: "+ ex.getMessage());

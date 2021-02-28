@@ -1,6 +1,8 @@
 package com.aiposizi.lab.service;
 
+import com.aiposizi.lab.dto.AuthorDto;
 import com.aiposizi.lab.dto.BookDto;
+import com.aiposizi.lab.dto.PublisherDto;
 import com.aiposizi.lab.entity.Author;
 import com.aiposizi.lab.entity.Book;
 import com.aiposizi.lab.entity.Publisher;
@@ -13,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,10 +26,10 @@ public class BookService {
     BookRepository bookRepository;
 
     @Autowired
-    AuthorService authorService;
+    AuthorService authorRepository;
 
     @Autowired
-    PublisherRepository publisherRepository;
+    PublisherService publisherRepository;
 
     public boolean existsById(Long id){
         return bookRepository.existsById(id);
@@ -42,14 +45,61 @@ public class BookService {
         bookRepository.findAll(sortedPage).forEach(books::add);
         return books;
     }
-    public Book save(Book book) throws Exception {
-        if(existsById(book.getId())&&book.getId()!=null){
-            throw new Exception("Book with id: " + book.getId() + " already exists");
-        }
+    public Book create(BookDto book) throws Exception {
+
         if(book.getTitle().isEmpty()){
             throw new Exception("title is required");
         }
-        return bookRepository.save(book);
+
+        Publisher publisher;
+        Author author;
+
+
+        if(book.getPublisher().isEmpty()||book.getPublisher()==null) {
+            throw new ServiceException("publishing title is empty");
+        }
+        List<Publisher> publishers = publisherRepository.findByTitle(book.getTitle());
+        if(publishers.isEmpty())
+        {
+            publisher = new Publisher();
+            publisher.setTitle(book.getPublisher());
+        }else publisher = publishers.get(0);
+
+
+        String[] authorName = book.getAuthor().split(" ");
+        try {
+            List<Author> authors = authorRepository.findByFirstnameAndLastname(authorName[0],authorName[1]);
+            if(authors.isEmpty())
+            {
+                author = new Author();
+                author.setFirstname(authorName[0]);
+                author.setLastname(authorName[1]);
+                //
+                author.setYear(new Date(1234));
+                //
+            }
+            else author = authors.get(0);
+        }catch (IndexOutOfBoundsException e){
+            throw new ServiceException("name of author must contains 2 words");
+        }
+
+
+        authorRepository.save(new AuthorDto(author));
+        publisherRepository.save(new PublisherDto(publisher));
+
+        return save(book,author,publisher);
+    }
+
+    public Book save(BookDto book,Author author,Publisher publisher){
+        Book newBook = new Book();
+        newBook.setYear(book.getYear());
+        newBook.setTitle(book.getTitle());
+        newBook.setAuthor(author);
+        newBook.setPublisher(publisher);
+
+        publisher.getPublications().add(newBook);
+        author.getBooks().add(newBook);
+        return bookRepository.save(newBook);
     }
 
     public Book update(Book book) throws Exception {
@@ -73,43 +123,5 @@ public class BookService {
         return bookRepository.count();
     }
 
-    public Book dtoToBook(BookDto bookDto) throws Exception {
-        Book book =new Book();
-        String[] authorName = bookDto.getAuthor().split(" ");
 
-        Author author;
-        Publisher publisher;
-
-        try {
-            List<Author> authors = authorService.findByFirstnameAndLastname(authorName[0],authorName[1]);
-            if(authors.isEmpty())
-            {
-                author = new Author();
-                author.setFirstname(authorName[0]);
-                author.setLastname(authorName[1]);
-            }
-            else author = authors.get(0);
-        }catch (IndexOutOfBoundsException e){
-            throw new ServiceException("name of author must contains 2 words");
-        }
-        author.getBooks().add(book);
-        authorService.save(author);
-
-        if(bookDto.getPublisher().isEmpty()||bookDto.getPublisher()==null) {
-            throw new ServiceException("publishing title is empty");
-        }
-        List<Publisher> publishers = publisherRepository.findByTitle(bookDto.getTitle());
-        if(publishers.isEmpty())
-        {
-            publisher = new Publisher();
-            publisher.setTitle(bookDto.getPublisher());
-        }else publisher = publishers.get(0);
-        publisher.getPublications().add(book);
-
-        book.setYear(bookDto.getYear());
-        book.setTitle(bookDto.getTitle());
-        book.setAuthor(author);
-        book.setPublisher(publisher);
-        return book;
-    }
 }

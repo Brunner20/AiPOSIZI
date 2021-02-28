@@ -1,5 +1,6 @@
 package com.aiposizi.lab.controller;
 
+import com.aiposizi.lab.dto.UserDto;
 import com.aiposizi.lab.entity.Author;
 import com.aiposizi.lab.entity.Book;
 import com.aiposizi.lab.entity.Publisher;
@@ -12,8 +13,10 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -59,15 +62,26 @@ public class UserController {
 
     @GetMapping(value = {"/add"})
     public String showAddUser(Model model) {
-        User user = new User();
+        UserDto user = new UserDto();
         model.addAttribute("add",true);
         model.addAttribute("user",user);
         return "user/user-add";
     }
 
     @PostMapping(value = {"/add"})
-    public String addUser(Model model, @ModelAttribute("user") User user) {
-        return null;
+    public String addUser(Model model, @ModelAttribute("user") @Valid UserDto user) {
+
+        try {
+            User newUser = userService.save(user);
+            logger.log(Level.INFO,"user was created");
+            return "redirect:/users/" + String.valueOf(newUser.getId());
+        } catch (Exception ex) {
+            String errorMessage = ex.getMessage();
+            logger.log(Level.ERROR,errorMessage);
+            model.addAttribute("errorMessage", errorMessage);
+            model.addAttribute("add", true);
+            return "user/user-edit";
+        }
     }
 
     @GetMapping(value = {"/{userId}/edit"})
@@ -91,6 +105,7 @@ public class UserController {
             oldUser.setFirstname(user.getFirstname());
             oldUser.setLastname(user.getLastname());
             userService.update(oldUser);
+            logger.log(Level.INFO,"user was updated");
             return "redirect:/users/" + String.valueOf(oldUser.getId());
         } catch (Exception e) {
             logger.log(Level.ERROR,"cannot update user: "+ e.getMessage());
@@ -108,25 +123,26 @@ public class UserController {
             user = userService.findById(usersId);
             model.addAttribute("allowDelete",true);
         } catch (Exception e){
-            logger.log(Level.ERROR,"cannot find book" + e.getMessage());
+            logger.log(Level.ERROR,"cannot find user" + e.getMessage());
             model.addAttribute("errorMessage", e.getMessage());
         }
 
         model.addAttribute("user",user);
-        return "user/userList";
+        return "user/user";
     }
 
     @PostMapping(value = {"/{userId}/delete"})
-    public String deleteUser(Model model, @PathVariable long userId, @ModelAttribute("user") Publisher publisher) {
+    public String deleteUser(Model model, @PathVariable long userId) {
         try {
             userService.deleteById(userId);
-            return "redirect:users/";
+            logger.log(Level.INFO, "user was deleted");
+            return "redirect:/users/";
         } catch (Exception ex) {
             String errorMessage = ex.getMessage();
             logger.log(Level.ERROR,"cannot delete user: "+ ex.getMessage());
             model.addAttribute("errorMessage", errorMessage);
 
-            return "user/user";
+            return "user/userList";
         }
     }
 }

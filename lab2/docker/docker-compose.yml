@@ -5,7 +5,7 @@ services:
     build:
       context: services/app
       dockerfile: Dockerfile
-    container_name: springbootapp
+    container_name: libraryapp
     ports:
       - "8080:8080"
     restart: on-failure

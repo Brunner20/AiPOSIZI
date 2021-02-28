@@ -1,0 +1,45 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Author List</title>
+        <link rel="stylesheet" type="text/css" href="/css/style.css"/>
+    </head>
+    <body>
+        <h1>Author List</h1>
+        <div>
+            <nobr>
+
+                <a href="/books">Back to Book List</a>
+            </nobr>
+        </div>
+        <br/><br/>
+        <div>
+            <table border="0">
+                <tr>
+                    <th>Id</th>
+                    <th>Firstname</th>
+                    <th>Lastname</th>
+                    <th>Birth</th>
+                </tr>
+                {{#authors}}
+                    <tr>
+                        <td>{{id}}</td>
+                        <td>{{firstname}}</td>
+                        <td>{{lastname}}</td>
+                        <td>{{year}}</td>
+                         <form action=""/books/{{id}}/author" name="book" method="POST">
+                        <td><input type="submit" value="Select" />
+                    </tr>
+                {{/authors}}
+            </table>
+        </div>
+        <br/><br/>
+        <div>
+            <nobr>
+                {{#hasPrev}}<a href="/authors?page={{prev}}">Prev</a>&nbsp;&nbsp;&nbsp;{{/hasPrev}}
+                {{#hasNext}}<a href="/authors?page={{next}}">Next</a>{{/hasNext}}
+            </nobr>
+        </div>
+    </body>
+</html>

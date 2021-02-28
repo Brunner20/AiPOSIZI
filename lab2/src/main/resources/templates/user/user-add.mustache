@@ -10,17 +10,17 @@
         <a href="/users">Back to User List</a>
         <br/><br/>
         {{#user}}
-        <form action="{{#add}}/users/add{{/add}}{{^add}}/users/{{id}}/edit{{/add}}" name="author" method="POST">
+        <form action="{{#add}}/users/add{{/add}}" name="user" method="POST">
             <table border="0">
                 <tr>
                     <td>Firstname</td>
                     <td>:</td>
-                    <td><input type="text" name="title" value="{{#firstname}}{{firstname}}{{/firstname}}" /></td>
+                    <td><input type="text" name="firstname" value="{{#firstname}}{{firstname}}{{/firstname}}" /></td>
                 </tr>
                 <tr>
                     <td>Lastname</td>
                     <td>:</td>
-                    <td><input type="text" name="year" value="{{#lastname}}{{lastname}}{{/lastname}}" /></td>
+                    <td><input type="text" name="lastname" value="{{#lastname}}{{lastname}}{{/lastname}}" /></td>
                 </tr>
             </table>
             <input type="submit" value="Create" />

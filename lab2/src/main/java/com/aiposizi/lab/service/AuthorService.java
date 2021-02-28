@@ -1,5 +1,6 @@
 package com.aiposizi.lab.service;
 
+import com.aiposizi.lab.dto.AuthorDto;
 import com.aiposizi.lab.entity.Author;
 import com.aiposizi.lab.repository.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,20 +32,25 @@ public class AuthorService {
         authorRepository.findAll(sortedPage).forEach(authors::add);
         return authors;
     }
-    public Author save(Author author) throws Exception {
+    public Author save(AuthorDto author) throws Exception {
         if(author.getLastname().isEmpty()||author.getFirstname().isEmpty()){
             throw new Exception("Name is required");
         }
-        return authorRepository.save(author);
+        Author newAuthor = new Author();
+        newAuthor.setFirstname(author.getFirstname());
+        newAuthor.setLastname(author.getLastname());
+        newAuthor.setYear(author.getYear());
+        return authorRepository.save(newAuthor);
     }
 
     public Author update(Author author) throws Exception {
         if(!existsById(author.getId())){
-            throw new Exception("Cannot find author with id " + author.getId());
+            throw new ServiceException("Cannot find author with id " + author.getId());
         }
         if(author.getLastname().isEmpty()||author.getFirstname().isEmpty()){
-            throw new Exception("Name is required");
+            throw new ServiceException("Name is required");
         }
+
         return authorRepository.save(author);
     }
 
