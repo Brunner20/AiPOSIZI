@@ -1,0 +1,37 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Author List</title>
+        <link rel="stylesheet" type="text/css" href="/css/style.css"/>
+    </head>
+    <body>
+        <h1>Author List</h1>
+        <div>
+            <nobr>
+                <a href="/">Back to Index</a>
+            </nobr>
+        </div>
+        <br/><br/>
+        <div>
+        {{#user}}
+               <form action="/users/{{id}}/addBook" method="post">
+        {{/user}}
+               <select name = "book">
+                    <option disabled>Выберите книгу</option>
+                    {{#books}}
+                        <option value="{{title}}">{{title}}</option>
+                    {{/books}}
+                </select>
+                <p><input type="submit" value="add"></p>
+
+        </div>
+        <br/><br/>
+        <div>
+            <nobr>
+                {{#hasPrev}}<a href="/authors?page={{prev}}">Prev</a>&nbsp;&nbsp;&nbsp;{{/hasPrev}}
+                {{#hasNext}}<a href="/authors?page={{next}}">Next</a>{{/hasNext}}
+            </nobr>
+        </div>
+    </body>
+</html>

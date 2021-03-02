@@ -22,7 +22,7 @@ import java.util.List;
 @RequestMapping(value = "/publishers")
 public class PublisherController {
 
-    private final Logger logger = LogManager.getLogger(this.getClass());
+    private static final Logger logger = LogManager.getLogger(PublisherController.class);
 
     private final int ROW_PER_PAGE = 5;
 

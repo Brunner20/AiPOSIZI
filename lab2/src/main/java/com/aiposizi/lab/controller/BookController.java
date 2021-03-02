@@ -18,7 +18,7 @@ import java.util.List;
 @Controller
 public class BookController {
 
-    private final Logger logger = LogManager.getLogger(this.getClass());
+    private static final Logger logger = LogManager.getLogger(BookController.class);
 
     private final int ROW_PER_PAGE = 5;
 
@@ -69,30 +69,6 @@ public class BookController {
         model.addAttribute("book",book);
         return "book/book";
     }
-    @GetMapping(value = "/books/{bookId}/author")
-    public String getAuthorOfBook(Model model, @RequestParam(value = "page",defaultValue = "1") int pageNumber, @PathVariable long bookId){
-
-        Book book = null;
-        try {
-            book = bookService.findById(bookId);
-            long count = bookService.count();
-            boolean hasPrev = pageNumber > 1;
-            boolean hasNext = (pageNumber * ROW_PER_PAGE) < count;
-            model.addAttribute("authors", authorService.findAll(pageNumber,ROW_PER_PAGE));
-            model.addAttribute("hasPrev", hasPrev);
-            model.addAttribute("prev", pageNumber - 1);
-            model.addAttribute("hasNext", hasNext);
-            model.addAttribute("next", pageNumber + 1);
-            return "book/authorsOfBook";
-        } catch (Exception e){
-            logger.log(Level.ERROR,"cannot find book" + e.getMessage());
-            model.addAttribute("errorMessage", e.getMessage());
-        }
-
-        model.addAttribute("book",book);
-        return "book/book";
-    }
-
 
     @GetMapping(value = {"/books/add"})
     public String showAddBook(Model model) {
@@ -174,7 +150,7 @@ public class BookController {
         try {
             bookService.deleteById(bookId);
             logger.log(Level.INFO,"book was deleted");
-            return "redirect:/books/";
+            return "redirect:/books";
         } catch (Exception ex) {
             String errorMessage = ex.getMessage();
             logger.log(Level.ERROR,"cannot delete book: "+ ex.getMessage());

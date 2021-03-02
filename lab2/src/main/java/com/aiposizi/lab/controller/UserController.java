@@ -1,11 +1,9 @@
 package com.aiposizi.lab.controller;
 
 import com.aiposizi.lab.dto.UserDto;
-import com.aiposizi.lab.entity.Author;
 import com.aiposizi.lab.entity.Book;
-import com.aiposizi.lab.entity.Publisher;
 import com.aiposizi.lab.entity.User;
-import com.aiposizi.lab.service.PublisherService;
+import com.aiposizi.lab.service.BookService;
 import com.aiposizi.lab.service.UserService;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -13,22 +11,25 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping(value = "/users")
 public class UserController {
 
-    private final Logger logger = LogManager.getLogger(this.getClass());
+    private static final Logger logger = LogManager.getLogger(UserController.class);
 
     private final int ROW_PER_PAGE = 5;
 
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private BookService bookService;
 
     @GetMapping(value = "")
     public String getUsers(Model model, @RequestParam(value = "page",defaultValue = "1") int pageNumber){
@@ -83,6 +84,43 @@ public class UserController {
             return "user/user-edit";
         }
     }
+    @GetMapping(value = {"{userId}/addBook"})
+    public String addBook(Model model,@PathVariable long userId) {
+        List<Book> list = bookService.findAll();
+        model.addAttribute("add",true);
+        model.addAttribute("books",list);
+        model.addAttribute("user",userService.findById(userId));
+        return "user/select";
+    }
+
+    @PostMapping(value = {"{userId}/addBook"})
+    public String addBookPost(Model model,@PathVariable long userId, @ModelAttribute("book") String  title) {
+
+        Optional<Book> bookOptional = bookService.findByTitle(title);
+        if(bookOptional.isPresent()){
+            User user = null;
+            try{
+                user = userService.findById(userId);
+                user.getBooks().add(bookOptional.get());
+                userService.update(user);
+                logger.log(Level.INFO,"book was added to user");
+                return "redirect:/users/" + user.getId();
+            } catch (Exception e) {
+                String errorMessage = e.getMessage();
+                logger.log(Level.ERROR,errorMessage);
+                model.addAttribute("errorMessage", errorMessage);
+                model.addAttribute("add", true);
+                return "user/select";
+            }
+
+        }else{
+            model.addAttribute("errorMessage", "can't find book");
+            model.addAttribute("add", true);
+            return "user/select";
+        }
+
+    }
+    
 
     @GetMapping(value = {"/{userId}/edit"})
     public String showEditUser(Model model, @PathVariable long userId) {

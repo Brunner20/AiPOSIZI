@@ -16,7 +16,7 @@ import java.util.List;
 @Entity
 @Table(name = "books")
 @Getter @Setter @EqualsAndHashCode
-@ToString
+@ToString(exclude = {"owners","author","publisher"})
 public class Book implements Serializable {
 
     private static final long serialVersionUID = 63453822723859663L;

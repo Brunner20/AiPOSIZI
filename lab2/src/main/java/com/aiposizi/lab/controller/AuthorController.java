@@ -2,27 +2,23 @@ package com.aiposizi.lab.controller;
 
 import com.aiposizi.lab.dto.AuthorDto;
 import com.aiposizi.lab.entity.Author;
-import com.aiposizi.lab.entity.Book;
-import com.aiposizi.lab.entity.Publisher;
-import com.aiposizi.lab.entity.User;
 import com.aiposizi.lab.service.AuthorService;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
 @RequestMapping(value = "/authors")
 public class AuthorController {
 
-    private final Logger logger = LogManager.getLogger(this.getClass());
+    private static final Logger logger = LogManager.getLogger(AuthorController.class);
 
     private final int ROW_PER_PAGE = 5;
 
@@ -61,14 +57,14 @@ public class AuthorController {
 
     @GetMapping(value = {"/add"})
     public String showAddAuthor(Model model) {
-        Author author = new Author();
+        AuthorDto author = new AuthorDto();
         model.addAttribute("add",true);
         model.addAttribute("author",author);
         return "author/author-add";
     }
 
     @PostMapping(value = {"/add"})
-    public String addAuthor(Model model, @ModelAttribute("author") AuthorDto author) {
+    public String addAuthor(Model model, @ModelAttribute("author") @Valid AuthorDto author) {
         try {
             Author newAuthor = authorService.save(author);
             logger.log(Level.INFO,"author was created");

@@ -11,7 +11,7 @@ import java.sql.Date;
 @Getter
 public class AuthorDto {
 
-    private Long id;
+
     @NotEmpty
     private String firstname;
     @NotEmpty
@@ -20,9 +20,11 @@ public class AuthorDto {
     private Date year;
 
     public AuthorDto(Author author) {
-        this.id = author.getId();
         this.firstname = author.getFirstname();
         this.lastname = author.getLastname();
         this.year = author.getYear();
+    }
+
+    public AuthorDto() {
     }
 }

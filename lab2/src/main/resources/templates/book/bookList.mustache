@@ -29,7 +29,8 @@
                         <td><a href="/books/{{id}}">{{title}}</a></td>
                         <td>{{year}}</td>
                         <td>{{#publisher.title}}{{publisher.title}}{{/publisher.title}}</td>
-                        <td>{{author.firstname}} {{author.lastname}}</td>
+                        <td>{{#author.firstname}}{{author.firstname}}{{/author.firstname}}
+                        {{#author.lastname}}{{author.lastname}}{{/author.lastname}}</td>
                     </tr>
                 {{/books}}
             </table>
