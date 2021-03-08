@@ -61,7 +61,7 @@ public class PublisherController {
 
     @GetMapping(value = {"/add"})
     public String showAddPublisher(Model model) {
-        Publisher publisher = new Publisher();
+        PublisherDto publisher = new PublisherDto();
         model.addAttribute("add",true);
         model.addAttribute("publisher",publisher);
         return "publisher/publisher-add";

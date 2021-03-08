@@ -18,4 +18,7 @@ public class PublisherDto {
         this.id = publisher.getId();
         this.title = publisher.getTitle();
     }
+
+    public PublisherDto() {
+    }
 }
